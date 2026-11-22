@@ -1,4 +1,4 @@
-const CACHE_NAME = 'id-esportivo-pwa-v2';
+const CACHE_NAME = 'id-esportivo-pwa-v3';
 const ASSETS = [
   '/',
   '/index.html',
