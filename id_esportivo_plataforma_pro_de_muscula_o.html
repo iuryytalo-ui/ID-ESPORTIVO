@@ -1,0 +1,2979 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>💪🏻ID ESPORTIVO ⚽ — Plataforma Inteligente de Musculação & Performance</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       VARIÁVEIS DINÂMICAS DE TEMA (10 PALETAS + COLOR PICKER EM TEMPO REAL)
+       ========================================================================== */
+    :root {
+      --bg-main: #070b11;
+      --bg-surface: rgba(16, 23, 36, 0.86);
+      --bg-solid: #101724;
+      --bg-elevated: rgba(25, 36, 56, 0.85);
+      --bg-input: #0b111c;
+      --border-color: rgba(255, 255, 255, 0.09);
+      --border-glow: rgba(190, 242, 100, 0.35);
+      --text-main: #f4f7fb;
+      --text-muted: #94a3b8;
+      --primary: #bef264;
+      --primary-contrast: #070b11;
+      --primary-glow: rgba(190, 242, 100, 0.28);
+      --accent: #38bdf8;
+      --cardio-bg: linear-gradient(135deg, rgba(190, 242, 100, 0.14), rgba(56, 189, 248, 0.12));
+      --skin: #e5b28e;
+      --skin-shadow: #c48964;
+      --hair: #1e293b;
+      --shirt: #24334a;
+      --shorts: #0f172a;
+      --anim-speed: 1;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      background-image:
+        radial-gradient(circle at 12% 0%, var(--primary-glow), transparent 36%),
+        radial-gradient(circle at 92% 18%, rgba(56, 189, 248, 0.08), transparent 34%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    .font-mono-num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    .bg-app { background-color: var(--bg-main); }
+    .bg-solid { background-color: var(--bg-solid); }
+    .bg-input { background-color: var(--bg-input); }
+    .text-main { color: var(--text-main); }
+    .text-muted { color: var(--text-muted); }
+    .text-primary { color: var(--primary); }
+    .text-accent { color: var(--accent); }
+    .border-theme { border-color: var(--border-color); }
+
+    /* Glassmorphism & Bento Cards */
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.55);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .glass-card:hover {
+      border-color: var(--border-glow);
+    }
+
+    .glass-elevated {
+      background: var(--bg-elevated);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--primary-contrast);
+      box-shadow: 0 6px 20px -4px var(--primary-glow);
+      transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-primary:hover { filter: brightness(1.07); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .cardio-banner {
+      background: var(--cardio-bg);
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 12px 32px -12px var(--primary-glow);
+    }
+
+    .nav-pill-active {
+      background-color: var(--primary);
+      color: var(--primary-contrast) !important;
+      box-shadow: 0 4px 16px -3px var(--primary-glow);
+    }
+
+    .mob-nav-active { color: var(--primary) !important; }
+
+    /* Scrollbar discreta */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.22); border-radius: 999px; }
+
+    /* ==========================================================================
+       PALCO DE ANIMAÇÃO ANATÔMICA (GIF HD EM SVG/CSS)
+       ========================================================================== */
+    .athlete-stage {
+      background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.06) 0%, var(--bg-input) 100%);
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+    .athlete-stage.paused * { animation-play-state: paused !important; }
+    .athlete-stage.slow-mo { --anim-speed: 2.2; }
+
+    .gif-pill {
+      position: absolute; top: 6px; left: 6px;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+      padding: 2px 6px; border-radius: 999px;
+      background: rgba(0, 0, 0, 0.65); color: var(--primary);
+      border: 1px solid var(--primary); z-index: 3;
+    }
+
+    .phase-pill {
+      position: absolute; bottom: 6px; left: 6px;
+      font-size: 9px; font-weight: 800;
+      padding: 2px 7px; border-radius: 999px;
+      background: rgba(0, 0, 0, 0.72); color: #fff;
+      border: 1px solid rgba(255,255,255,0.18); z-index: 3;
+      overflow: hidden; height: 18px; display: flex; align-items: center;
+    }
+    .phase-track {
+      display: flex; flex-direction: column;
+      animation: phaseSwitch calc(2.2s * var(--anim-speed)) steps(2, end) infinite;
+    }
+    .phase-track span { height: 18px; line-height: 18px; white-space: nowrap; }
+    @keyframes phaseSwitch { 0% { transform: translateY(0); } 100% { transform: translateY(-36px); } }
+
+    .muscle-glow {
+      fill: var(--primary);
+      filter: drop-shadow(0 0 6px var(--primary));
+      animation: musclePulse calc(2.2s * var(--anim-speed)) ease-in-out infinite;
+    }
+    @keyframes musclePulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.98; } }
+
+    .arrow-float { animation: arrowPulse calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes arrowPulse { 0%, 100% { opacity: 0.35; transform: translateY(2px); } 50% { opacity: 1; transform: translateY(-3px); } }
+
+    /* Keyframes dos Exercícios */
+    .kf-bench-bar { animation: kfBenchBar calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfBenchBar { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-28px); } }
+
+    .kf-row-pull { animation: kfRowPull calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfRowPull { 0%, 100% { transform: translateX(0px); } 50% { transform: translateX(-28px); } }
+    .kf-row-weights { animation: kfRowWeights calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfRowWeights { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-22px); } }
+    .kf-row-torso { transform-origin: 54px 104px; animation: kfRowTorso calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfRowTorso { 0%, 100% { transform: rotate(5deg); } 50% { transform: rotate(-6deg); } }
+
+    .kf-squat-upper { animation: kfSquatUpper calc(2.4s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfSquatUpper { 0%, 100% { transform: translate(0px, 0px); } 50% { transform: translate(-6px, 26px); } }
+    .kf-squat-thigh { transform-origin: 84px 86px; animation: kfSquatThigh calc(2.4s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfSquatThigh { 0%, 100% { transform: translate(0px, 0px) rotate(0deg); } 50% { transform: translate(-6px, 26px) rotate(-52deg); } }
+    .kf-squat-shin { transform-origin: 86px 128px; animation: kfSquatShin calc(2.4s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfSquatShin { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(16deg); } }
+
+    .kf-sh-l { transform-origin: 72px 58px; animation: kfShoulderL calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-sh-r { transform-origin: 108px 58px; animation: kfShoulderR calc(2.2s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfShoulderL { 0%, 100% { transform: rotate(12deg); } 50% { transform: rotate(98deg); } }
+    @keyframes kfShoulderR { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(-98deg); } }
+
+    .kf-curl-forearm { transform-origin: 88px 78px; animation: kfCurlForearm calc(2.0s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfCurlForearm { 0%, 100% { transform: rotate(18deg); } 50% { transform: rotate(-108deg); } }
+
+    .kf-tri-forearm { transform-origin: 78px 74px; animation: kfTriForearm calc(2.0s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfTriForearm { 0%, 100% { transform: rotate(-52deg); } 50% { transform: rotate(36deg); } }
+    .kf-tri-weights { animation: kfTriWeights calc(2.0s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfTriWeights { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+
+    .kf-abs-torso { transform-origin: 96px 112px; animation: kfAbsTorso calc(2.1s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfAbsTorso { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(36deg); } }
+
+    .kf-run-body { animation: kfRunBody calc(0.65s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfRunBody { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+    .kf-run-legA { transform-origin: 82px 84px; animation: kfRunLegA calc(0.65s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-run-legB { transform-origin: 82px 84px; animation: kfRunLegB calc(0.65s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfRunLegA { 0%, 100% { transform: rotate(-34deg); } 50% { transform: rotate(38deg); } }
+    @keyframes kfRunLegB { 0%, 100% { transform: rotate(38deg); } 50% { transform: rotate(-34deg); } }
+    .kf-run-armA { transform-origin: 84px 56px; animation: kfRunLegB calc(0.65s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-run-armB { transform-origin: 84px 56px; animation: kfRunLegA calc(0.65s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-belt { stroke-dasharray: 12 8; animation: kfBelt calc(0.6s * var(--anim-speed)) linear infinite; }
+    @keyframes kfBelt { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 40; } }
+
+    .kf-spin-wheel { transform-origin: 124px 112px; animation: kfSpin calc(0.75s * var(--anim-speed)) linear infinite; }
+    .kf-spin-crank { transform-origin: 84px 112px; animation: kfSpin calc(0.75s * var(--anim-speed)) linear infinite; }
+    @keyframes kfSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .kf-bike-legA { transform-origin: 72px 82px; animation: kfBikeLegA calc(0.75s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-bike-legB { transform-origin: 72px 82px; animation: kfBikeLegB calc(0.75s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfBikeLegA { 0%, 100% { transform: rotate(-18deg); } 50% { transform: rotate(22deg); } }
+    @keyframes kfBikeLegB { 0%, 100% { transform: rotate(22deg); } 50% { transform: rotate(-18deg); } }
+
+    .kf-stairs-step { animation: kfStairsStep calc(1.1s * var(--anim-speed)) linear infinite; }
+    @keyframes kfStairsStep { 0% { transform: translate(0px, 0px); } 100% { transform: translate(-18px, 14px); } }
+    .kf-stairs-body { animation: kfRunBody calc(0.85s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-stairs-legA { transform-origin: 76px 78px; animation: kfStairsLegA calc(0.85s * var(--anim-speed)) ease-in-out infinite; }
+    .kf-stairs-legB { transform-origin: 76px 78px; animation: kfStairsLegB calc(0.85s * var(--anim-speed)) ease-in-out infinite; }
+    @keyframes kfStairsLegA { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(22deg); } }
+    @keyframes kfStairsLegB { 0%, 100% { transform: rotate(22deg); } 50% { transform: rotate(-28deg); } }
+
+    .confetti-piece {
+      position: fixed; top: -14px; width: 10px; height: 14px;
+      z-index: 9999; pointer-events: none;
+      animation: confettiFall 2.8s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
+    @keyframes timerFlash {
+      0%, 100% { box-shadow: 0 0 0 0 var(--primary-glow); }
+      50% { box-shadow: 0 0 0 18px rgba(0, 0, 0, 0); }
+    }
+    .timer-done-pulse { animation: timerFlash 0.75s ease-in-out 4; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-app text-main pb-24 lg:pb-10">
+
+  <!-- ========================================================================
+       HEADER SUPERIOR FIXO (LOGO + SELETOR DE PALETA + STREAK + NAVEGAÇÃO)
+       ======================================================================== -->
+  <header class="sticky top-0 z-40 glass-card border-b border-theme">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <!-- Logo & Drawer Mobile -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button onclick="toggleMobileDrawer(true)" class="lg:hidden w-9 h-9 rounded-xl glass-elevated flex items-center justify-center text-base font-bold">☰</button>
+        <button onclick="switchTab('dashboard')" class="flex items-center gap-2.5 text-left min-w-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-extrabold text-sm sm:text-base shrink-0"
+               style="background: var(--primary); color: var(--primary-contrast); box-shadow: 0 4px 14px var(--primary-glow);">
+            ID
+          </div>
+          <div class="min-w-0">
+            <div class="font-extrabold text-sm sm:text-base tracking-tight truncate">💪🏻ID ESPORTIVO ⚽</div>
+            <div class="text-[10px] text-muted font-semibold hidden sm:block truncate">Musculação Inteligente & Performance</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Controles Rápidos no Header: Seletor de Paleta, Streak/Nível e Cronômetro -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Seletor Rápido de Paleta no Header -->
+        <div class="relative">
+          <button onclick="toggleHeaderPaletteMenu()" class="px-2.5 py-2 rounded-xl glass-elevated text-xs font-bold flex items-center gap-1.5 hover:brightness-110 transition" title="Trocar Paleta de Cores">
+            <span id="hdr-palette-dot" class="w-3 h-3 rounded-full" style="background: var(--primary);"></span>
+            <span class="hidden md:inline">Cores</span>
+            <span class="text-[10px] text-muted">▾</span>
+          </button>
+          <div id="hdr-palette-dropdown" class="hidden absolute right-0 mt-2 w-60 bg-solid border border-theme rounded-2xl p-2.5 shadow-2xl z-50 space-y-1.5">
+            <div class="text-[10px] font-extrabold uppercase text-muted px-2 pt-0.5">10 Paletas Rápidas</div>
+            <div id="hdr-palette-list" class="max-h-64 overflow-y-auto space-y-1"></div>
+            <button onclick="toggleHeaderPaletteMenu(); switchTab('settings');" class="w-full py-1.5 rounded-xl bg-input border border-theme text-[11px] font-bold text-primary">
+              🎨 Cor Customizada (Picker)
+            </button>
+          </div>
+        </div>
+
+        <!-- Status Streak & Nível -->
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-input border border-theme text-xs font-bold">
+          <span>🔥 <span id="hdr-streak" class="font-mono-num">0</span>d</span>
+          <span class="text-muted">•</span>
+          <span class="text-primary font-mono-num">Nv.<span id="hdr-level">1</span></span>
+        </div>
+
+        <!-- Botão Cronômetro de Descanso -->
+        <button onclick="openRestTimer()" class="px-3 py-2 rounded-xl glass-elevated text-xs font-extrabold flex items-center gap-1.5 hover:brightness-110 transition">
+          <span>⏱️</span>
+          <span id="top-timer-label" class="font-mono-num">Descanso</span>
+        </button>
+
+        <!-- Botão Treinar -->
+        <button onclick="switchTab('active')" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold hidden sm:flex items-center gap-1">
+          <span>▶</span> Treinar
+        </button>
+      </div>
+    </div>
+
+    <!-- Barra de Navegação Desktop (8 Abas) -->
+    <nav class="hidden lg:block border-t border-theme bg-input/60">
+      <div class="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between gap-1 overflow-x-auto">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">🏠 Dashboard</button>
+        <button onclick="switchTab('builder')" id="nav-builder" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">🧩 Montar Treino</button>
+        <button onclick="switchTab('active')" id="nav-active" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">🏋️ Treino Ativo</button>
+        <button onclick="switchTab('library')" id="nav-library" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">🎞️ Biblioteca Visual</button>
+        <button onclick="switchTab('evolution')" id="nav-evolution" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">📈 Evolução & Medidas</button>
+        <button onclick="switchTab('nutrition')" id="nav-nutrition" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">💧 Nutrição & Calculadoras</button>
+        <button onclick="switchTab('gemini')" id="nav-gemini" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">✨ Personal GEMINI</button>
+        <button onclick="switchTab('settings')" id="nav-settings" class="desk-nav-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-muted hover:text-main transition">🎨 Personalizar & Backup</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       GAVETA MOBILE (TODAS AS 8 ABAS)
+       ======================================================================== -->
+  <div id="mobile-drawer" class="hidden fixed inset-0 z-50 lg:hidden">
+    <div onclick="toggleMobileDrawer(false)" class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <div class="relative w-72 max-w-[85vw] h-full bg-solid border-r border-theme flex flex-col p-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-theme">
+        <span class="font-extrabold text-sm">💪🏻ID ESPORTIVO ⚽</span>
+        <button onclick="toggleMobileDrawer(false)" class="w-8 h-8 rounded-xl glass-elevated font-bold text-xs">✕</button>
+      </div>
+      <div class="flex-1 overflow-y-auto py-3 space-y-1 text-sm font-bold">
+        <button onclick="switchTab('dashboard'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">🏠 Dashboard (Início)</button>
+        <button onclick="switchTab('builder'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">🧩 Montar Treino</button>
+        <button onclick="switchTab('active'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">🏋️ Treino Ativo</button>
+        <button onclick="switchTab('library'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">🎞️ Biblioteca Visual</button>
+        <button onclick="switchTab('evolution'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">📈 Evolução & Medidas</button>
+        <button onclick="switchTab('nutrition'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">💧 Nutrição & Calculadoras</button>
+        <button onclick="switchTab('gemini'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">✨ Personal GEMINI</button>
+        <button onclick="switchTab('settings'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-left">🎨 Personalizar & Backup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL DAS 8 ABAS
+       ======================================================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-6">
+
+    <!-- ======================================================================
+         ABA 1: DASHBOARD (INÍCIO CAPRICHADO + EDITAR/AJUSTAR ABA)
+         ====================================================================== -->
+    <section id="tab-dashboard" class="tab-view space-y-5">
+      <!-- Barra Superior da Aba com Botão Editar/Ajustar -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-primary" id="dash-greeting">Bom treino, Atleta!</span>
+          <h1 class="font-extrabold text-xl sm:text-2xl tracking-tight">Central de Performance</h1>
+        </div>
+        <button onclick="toggleEditPanel('dash-edit-panel')" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-extrabold flex items-center gap-1.5 hover:brightness-110 transition">
+          <span>✏️</span> Ajustar Dashboard
+        </button>
+      </div>
+
+      <!-- Painel Retrátil: Editar / Ajustar Dashboard -->
+      <div id="dash-edit-panel" class="hidden glass-card rounded-3xl p-5 border-2 space-y-4" style="border-color: var(--primary);">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-sm sm:text-base">✏️ Ajustar Dados & Metas do Dashboard</h3>
+          <button onclick="toggleEditPanel('dash-edit-panel')" class="text-xs font-bold text-muted hover:text-main">Fechar ✕</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+          <div>
+            <label class="font-bold text-muted">Nome do Atleta</label>
+            <input id="ed-dash-name" type="text" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold text-main" />
+          </div>
+          <div>
+            <label class="font-bold text-muted">Objetivo Principal</label>
+            <input id="ed-dash-goal" type="text" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold text-main" />
+          </div>
+          <div>
+            <label class="font-bold text-muted">Meta Treinos / Semana</label>
+            <input id="ed-dash-wgoal" type="number" min="1" max="7" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold font-mono-num text-main" />
+          </div>
+          <div>
+            <label class="font-bold text-muted">Meta Água Diária (ml)</label>
+            <input id="ed-dash-water" type="number" step="100" min="500" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold font-mono-num text-main" />
+          </div>
+          <div>
+            <label class="font-bold text-muted">Meta Cardio Semanal (min)</label>
+            <input id="ed-dash-cardio" type="number" step="10" min="10" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold font-mono-num text-main" />
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-theme">
+          <div class="text-xs text-muted">💡 Dica: Você também pode clicar diretamente nos dias (Seg a Dom) abaixo para marcar/desmarcar dias treinados!</div>
+          <button onclick="saveDashboardEdits()" class="px-5 py-2.5 rounded-xl btn-primary text-xs font-extrabold">💾 Salvar Ajustes</button>
+        </div>
+      </div>
+
+      <!-- CARD: DICA FACILITADA DO PERSONAL GEMINI LOGO NO TOPO -->
+      <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-base" style="background: var(--primary); color: var(--primary-contrast);">💡</span>
+            <div>
+              <h2 class="font-extrabold text-sm sm:text-base">Dica Facilitada do Personal GEMINI</h2>
+              <p class="text-[11px] text-muted">Escolha um tema abaixo ou gere uma dica nova em 1 clique</p>
+            </div>
+          </div>
+          <button onclick="nextFacilitatedTip(true)" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold flex items-center gap-1.5">
+            <span>🔄</span> Nova Dica em 1 Clique
+          </button>
+        </div>
+
+        <!-- Filtros Rápidos por Tema -->
+        <div id="dash-tip-categories" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
+
+        <!-- Texto Facilitado da Dica -->
+        <div class="bg-input border border-theme rounded-2xl p-3.5 sm:p-4 flex items-start gap-3">
+          <span class="text-xl shrink-0">🤖</span>
+          <p id="dash-daily-tip" class="text-xs sm:text-sm font-medium leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- BENTO GRID PRINCIPAL DO DASHBOARD -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- CARD HERO: TREINO DO DIA (7 colunas) -->
+        <div class="lg:col-span-7 glass-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-4 relative overflow-hidden">
+          <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full opacity-20 blur-3xl pointer-events-none" style="background: var(--primary);"></div>
+          <div class="space-y-3 relative z-10">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-input border border-theme text-primary" id="dash-split-tag">
+                Divisão ABC • Hipertrofia
+              </span>
+              <!-- Seletor Rápido da Letra do Treino (A, B, C, D, E...) -->
+              <div id="dash-letter-pills" class="flex items-center gap-1"></div>
+            </div>
+
+            <h2 class="font-extrabold text-2xl sm:text-3xl leading-tight" id="dash-hero-title">Treino A — Peito & Tríceps</h2>
+            <p class="text-xs sm:text-sm text-muted" id="dash-hero-muscles">Grupos: Peito, Ombros, Tríceps • ~55 min</p>
+
+            <!-- Destaque do Cardio Final Obrigatório -->
+            <div class="cardio-banner rounded-2xl p-3 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-xl shrink-0">🫀</span>
+                <div class="min-w-0">
+                  <div class="text-[10px] font-extrabold uppercase text-primary">Cardio Final Obrigatório</div>
+                  <div class="text-xs sm:text-sm font-bold truncate" id="dash-hero-cardio">Esteira • 20 min</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono-num font-extrabold px-2.5 py-1 rounded-lg bg-input border border-theme shrink-0" id="dash-hero-cardio-time">20 min</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 pt-1 relative z-10">
+            <button onclick="startSelectedHeroWorkout()" class="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl btn-primary font-extrabold text-sm flex items-center justify-center gap-2">
+              <span>▶</span> INICIAR TREINO AGORA
+            </button>
+            <button onclick="switchTab('builder')" class="px-4 py-3.5 rounded-2xl glass-elevated text-xs sm:text-sm font-bold hover:brightness-110">
+              🧩 Editar Ficha
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD BENTO: CHECK-IN SEMANAL INTERATIVO + PROGRESSO (5 colunas) -->
+        <div class="lg:col-span-5 glass-card rounded-3xl p-5 flex flex-col justify-between gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-extrabold text-base">📅 Constância Semanal</h3>
+              <p class="text-xs text-muted">Toque nos dias para marcar treino pago</p>
+            </div>
+            <span class="font-mono-num font-extrabold text-sm text-primary" id="dash-week-ratio">0/4 dias</span>
+          </div>
+
+          <div id="dash-checkin-grid" class="grid grid-cols-7 gap-1.5"></div>
+
+          <!-- Mini Gráfico SVG de Constância / Volume -->
+          <div class="bg-input border border-theme rounded-2xl p-3">
+            <div class="flex items-center justify-between text-[11px] text-muted mb-1.5">
+              <span>Volume por Sessão (kg)</span>
+              <span class="text-primary font-bold">Últimos treinos</span>
+            </div>
+            <div id="dash-mini-chart" class="h-20 w-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINHA INFERIOR DO BENTO GRID: HIDRATAÇÃO + VOLUME + CARDIO SEMANAL -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Contador Interativo de Hidratação -->
+        <div class="glass-card rounded-3xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-sm">💧 Hidratação Hoje</span>
+            <span class="font-mono-num font-extrabold text-sm text-accent" id="dash-water-pct">0%</span>
+          </div>
+          <div class="w-full h-3 bg-input rounded-full overflow-hidden border border-theme">
+            <div id="dash-water-bar" class="h-full rounded-full transition-all duration-500" style="width: 0%; background: var(--accent);"></div>
+          </div>
+          <div class="flex items-center justify-between text-xs font-mono-num">
+            <span class="font-bold"><span id="dash-water-cur">0</span> / <span id="dash-water-goal">2625</span> ml</span>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5 pt-1">
+            <button onclick="addWater(-250)" class="py-2 rounded-xl glass-elevated text-xs font-extrabold hover:brightness-110">-250ml</button>
+            <button onclick="addWater(250)" class="py-2 rounded-xl glass-elevated text-xs font-extrabold hover:brightness-110">+250ml 🥛</button>
+            <button onclick="addWater(500)" class="py-2 rounded-xl btn-primary text-xs font-extrabold">+500ml 🍼</button>
+          </div>
+        </div>
+
+        <!-- Volume Total Levantado -->
+        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-sm">🏋️ Volume Total Acumulado</span>
+            <span class="text-lg">🏆</span>
+          </div>
+          <div class="my-2">
+            <div class="font-mono-num font-extrabold text-3xl text-primary"><span id="dash-total-vol">0</span> <span class="text-base">kg</span></div>
+            <p class="text-xs text-muted mt-1"><span id="dash-workouts-count" class="font-bold text-main">0</span> sessões concluídas • Ofensiva de <span id="dash-streak-txt" class="font-bold text-primary">0 dias</span></p>
+          </div>
+          <button onclick="switchTab('evolution')" class="w-full py-2 rounded-xl glass-elevated text-xs font-bold hover:brightness-110">Ver Recordes (PRs) →</button>
+        </div>
+
+        <!-- Tempo de Cardio na Semana -->
+        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-sm">🫀 Cardio na Semana</span>
+            <span class="font-mono-num font-extrabold text-xs text-primary"><span id="dash-cardio-cur">0</span> / <span id="dash-cardio-goal">100</span> min</span>
+          </div>
+          <div class="w-full h-3 bg-input rounded-full overflow-hidden border border-theme">
+            <div id="dash-cardio-bar" class="h-full rounded-full transition-all duration-500" style="width: 0%; background: var(--primary);"></div>
+          </div>
+          <p class="text-xs text-muted">Cardio obrigatório pago ao final de cada sessão.</p>
+          <div class="grid grid-cols-2 gap-1.5 pt-1">
+            <button onclick="addWeeklyCardioMinutes(15)" class="py-2 rounded-xl glass-elevated text-xs font-extrabold">+15 min</button>
+            <button onclick="addWeeklyCardioMinutes(20)" class="py-2 rounded-xl btn-primary text-xs font-extrabold">+20 min 🫀</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 2: MONTAR TREINO (INTELIGENTE + TEMPO DE DESCANSO + DICA NO CARD)
+         ====================================================================== -->
+    <section id="tab-builder" class="tab-view hidden space-y-5">
+      <!-- Barra Superior da Aba com Botão Editar/Ajustar -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-xl sm:text-2xl">🧩 Montar & Personalizar Treinos</h1>
+          <p class="text-xs text-muted">Gerador inteligente em 1 clique + edição completa de descanso, cargas e cardio</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleBuilderGenerator()" id="btn-toggle-gen" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-extrabold flex items-center gap-1.5">
+            <span>✏️</span> Editar / Gerar Planilha
+          </button>
+          <button onclick="openCustomExerciseModal()" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">
+            ➕ Novo Exercício
+          </button>
+        </div>
+      </div>
+
+      <!-- Painel Gerador Inteligente em 1 Clique -->
+      <div id="builder-generator-box" class="glass-card rounded-3xl p-5 sm:p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-base sm:text-lg">⚡ Gerador Inteligente em 1 Clique</h2>
+          <span class="text-[11px] font-bold text-primary">Cardio Final Obrigatório Incluso</span>
+        </div>
+
+        <!-- 1. Divisão Muscular -->
+        <div class="space-y-2">
+          <label class="text-xs font-extrabold uppercase tracking-wider text-primary">1. Escolha a Divisão Muscular</label>
+          <div id="split-selector-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2"></div>
+        </div>
+
+        <!-- 2. Presets + Objetivo 100% Livre -->
+        <div class="space-y-2.5">
+          <label class="text-xs font-extrabold uppercase tracking-wider text-primary">2. Objetivo (Preset ou Campo 100% Livre)</label>
+          <div id="goal-presets-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+          <input id="custom-goal-input" type="text"
+                 placeholder="Ou digite qualquer foco livre: Ex.: Preparação TAF, Explosão Futebol, Hipertrofia Pernas..."
+                 class="w-full bg-input border border-theme rounded-2xl px-4 py-3 text-sm font-semibold text-main placeholder:text-muted focus:outline-none" />
+        </div>
+
+        <!-- 3. Nível + Cardio -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-extrabold uppercase tracking-wider text-primary">3. Nível do Atleta</label>
+            <select id="gen-level" class="mt-1 w-full bg-input border border-theme rounded-2xl px-4 py-2.5 text-sm font-bold text-main">
+              <option value="iniciante">Iniciante (Adaptação)</option>
+              <option value="intermediario" selected>Intermediário (Equilibrado)</option>
+              <option value="avancado">Avançado (Alta Intensidade)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-extrabold uppercase tracking-wider text-primary">4. Cardio Final Obrigatório</label>
+            <select id="gen-cardio" class="mt-1 w-full bg-input border border-theme rounded-2xl px-4 py-2.5 text-sm font-bold text-main">
+              <option value="auto">Automático pelo Objetivo</option>
+              <option value="esteira">Esteira (Corrida / Inclinada)</option>
+              <option value="bike">Bike Indoor / Spin</option>
+              <option value="escada">Simulador de Escada</option>
+              <option value="eliptico">Elíptico / Transport</option>
+              <option value="corrida_livre">Corrida Livre / 2.400m TAF</option>
+              <option value="hiit">HIIT Metabólico</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="runSmartGenerator()" class="w-full py-3.5 rounded-2xl btn-primary font-extrabold text-sm sm:text-base flex items-center justify-center gap-2">
+          <span>🚀</span> Gerar Planilha Completa Agora
+        </button>
+      </div>
+
+      <!-- Abas Internas dos Treinos (Treino A, B, C, D, E...) -->
+      <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div id="day-letter-tabs" class="flex flex-wrap items-center gap-2"></div>
+          <div class="flex items-center gap-2">
+            <button onclick="openLibraryModal('add')" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">+ Adicionar Exercício</button>
+            <button onclick="startEditorDayWorkout()" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-bold hover:brightness-110">▶ Treinar Este Dia</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-2 border-t border-theme items-center">
+          <div class="md:col-span-6">
+            <label class="text-[11px] font-bold text-muted">Nome / Foco do Dia</label>
+            <input id="editor-day-name" type="text" onchange="renameCurrentDay(this.value)"
+                   class="mt-1 w-full bg-input border border-theme rounded-xl px-3.5 py-2 text-sm font-bold text-main" />
+          </div>
+          <div class="md:col-span-6">
+            <label class="text-[11px] font-bold text-muted">Dias da Semana Mapeados</label>
+            <div id="editor-weekdays" class="mt-1 flex flex-wrap gap-1.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Exercícios com Tempo de Descanso em Destaque e Dica Direta no Card -->
+      <div id="editor-exercises-list" class="space-y-4"></div>
+
+      <!-- Bloco Cardio Final Obrigatório -->
+      <div id="editor-cardio-block"></div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 3: TREINO ATIVO (EXECUÇÃO + CRONÔMETRO DE DESCANSO INTEGRADO)
+         ====================================================================== -->
+    <section id="tab-active" class="tab-view hidden space-y-5">
+      <!-- Barra Superior da Sessão + Botão Ajustar Treino Agora -->
+      <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <select id="active-day-select" onchange="switchActiveDay(Number(this.value))"
+                    class="bg-input border border-theme rounded-xl px-3 py-2 text-sm font-extrabold text-main"></select>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-input border border-theme text-primary" id="active-goal-badge">Hipertrofia</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="toggleEditPanel('active-quick-adjust')" class="px-3 py-2 rounded-xl glass-elevated text-xs font-extrabold">
+              ✏️ Ajustar Treino Agora
+            </button>
+            <span class="px-3 py-1.5 rounded-xl bg-input border border-theme text-xs font-mono-num font-bold">⏱️ <span id="active-clock">00:00</span></span>
+            <span class="px-3 py-1.5 rounded-xl bg-input border border-theme text-xs font-mono-num font-bold text-primary">🏋️ <span id="active-volume">0</span> kg</span>
+            <button onclick="finishActiveWorkout()" class="px-4 py-2 rounded-xl btn-primary text-xs sm:text-sm font-extrabold">🏆 Finalizar Treino</button>
+          </div>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div class="w-full h-3 bg-input rounded-full overflow-hidden border border-theme">
+          <div id="active-progress-bar" class="h-full rounded-full transition-all duration-500" style="width: 0%; background: var(--primary);"></div>
+        </div>
+
+        <!-- Painel Rápido: Ajustar Treino Durante a Sessão -->
+        <div id="active-quick-adjust" class="hidden pt-3 border-t border-theme flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-bold text-muted">Ajustes rápidos nesta sessão:</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="editorDayIdx=activeDayIdx; openLibraryModal('add')" class="px-3 py-1.5 rounded-xl btn-primary font-extrabold">+ Adicionar Exercício</button>
+            <button onclick="editorDayIdx=activeDayIdx; openLibraryModal('swap', activeExIdx)" class="px-3 py-1.5 rounded-xl glass-elevated font-bold">🔄 Trocar Exercício Atual</button>
+            <button onclick="editorDayIdx=activeDayIdx; openLibraryModal('swap_cardio')" class="px-3 py-1.5 rounded-xl glass-elevated font-bold">🫀 Trocar Cardio Final</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pills de Navegação Rápida entre Exercícios -->
+      <div id="active-exercise-pills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+
+      <!-- Palco do Exercício em Foco -->
+      <div id="active-focus-stage"></div>
+
+      <!-- Bloco Cardio Final Obrigatório na Execução -->
+      <div id="active-cardio-stage"></div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 4: BIBLIOTECA VISUAL (GIF ANIMADO DE ATLETA + EDITAR/CRIAR)
+         ====================================================================== -->
+    <section id="tab-library" class="tab-view hidden space-y-5">
+      <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="font-extrabold text-xl sm:text-2xl">🎞️ Biblioteca Visual Anatômica</h1>
+            <p class="text-xs text-muted">Demonstrações animadas com atleta e equipamentos + dicas facilitadas</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openCustomExerciseModal()" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">
+              ✏️ Editar / Criar Exercício
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input id="catalog-search" type="text" oninput="renderCatalog()" placeholder="Buscar exercício ou grupo muscular..."
+                 class="sm:w-80 bg-input border border-theme rounded-xl px-3.5 py-2 text-sm font-semibold text-main" />
+          <div id="catalog-muscle-chips" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
+        </div>
+      </div>
+
+      <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 5: EVOLUÇÃO & MEDIDAS (COM EDITAR / REGISTRAR EVOLUÇÃO)
+         ====================================================================== -->
+    <section id="tab-evolution" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-xl sm:text-2xl">📈 Evolução, Medidas & Recordes (PRs)</h1>
+          <p class="text-xs text-muted">Acompanhe sua evolução corporal e recordes de carga</p>
+        </div>
+        <button onclick="toggleEditPanel('evo-edit-panel')" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">
+          ✏️ Editar / Registrar Evolução
+        </button>
+      </div>
+
+      <!-- Painel Retrátil: Registrar / Editar Medidas e PRs -->
+      <div id="evo-edit-panel" class="glass-card rounded-3xl p-5 space-y-4">
+        <h3 class="font-extrabold text-base">📏 Nova Medição Corporal</h3>
+        <form onsubmit="saveMeasurement(event)" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 text-xs items-end">
+          <div><label class="font-bold text-muted">Peso (kg)*</label><input id="m-weight" type="number" step="0.1" required class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">% Gordura</label><input id="m-bf" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Peito (cm)</label><input id="m-chest" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Braço (cm)</label><input id="m-arm" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Cintura (cm)</label><input id="m-waist" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Coxa (cm)</label><input id="m-thigh" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Panturr. (cm)</label><input id="m-calf" type="number" step="0.1" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <button type="submit" class="py-2.5 rounded-xl btn-primary font-extrabold text-xs">💾 Salvar</button>
+        </form>
+      </div>
+
+      <!-- Gráfico SVG + Comparativo -->
+      <div class="glass-card rounded-3xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-base sm:text-lg">Curva de Peso Corporal</h3>
+          <span class="text-xs font-mono-num font-bold text-primary" id="evo-weight-delta">Sem registros</span>
+        </div>
+        <div id="weight-chart-box" class="w-full h-48 bg-input border border-theme rounded-2xl p-3 flex items-center justify-center"></div>
+        <div id="evo-measurements-table" class="space-y-1.5"></div>
+      </div>
+
+      <!-- PRs + Histórico Editável -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="glass-card rounded-3xl p-5 space-y-3">
+          <h3 class="font-extrabold text-base">🏆 Recordes Pessoais (PRs)</h3>
+          <div id="prs-list" class="space-y-2 max-h-72 overflow-y-auto"></div>
+        </div>
+        <div class="glass-card rounded-3xl p-5 space-y-3">
+          <h3 class="font-extrabold text-base">📅 Histórico de Sessões</h3>
+          <div id="history-list" class="space-y-2 max-h-72 overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 6: NUTRIÇÃO & CALCULADORAS (SINCRONIZÁVEL COM O DASHBOARD)
+         ====================================================================== -->
+    <section id="tab-nutrition" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-xl sm:text-2xl">💧 Nutrição, Macros & Calculadoras</h1>
+          <p class="text-xs text-muted">Calcule água, proteína, TMB/GET, 1RM e zonas de frequência cardíaca</p>
+        </div>
+        <button onclick="syncCalcGoalsToDashboard()" class="px-4 py-2 rounded-xl btn-primary text-xs font-extrabold">
+          ✏️ Ajustar Dados & Sincronizar Metas com Dashboard
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Calculadora TMB, GET, Água, Proteína e Macros -->
+        <div class="glass-card rounded-3xl p-5 space-y-4">
+          <h3 class="font-extrabold text-base">🥗 Água, Proteína, TMB, GET & Macros</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+            <div><label class="font-bold text-muted">Peso (kg)</label><input id="c-weight" type="number" value="75" oninput="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+            <div><label class="font-bold text-muted">Altura (cm)</label><input id="c-height" type="number" value="175" oninput="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+            <div><label class="font-bold text-muted">Idade</label><input id="c-age" type="number" value="25" oninput="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+            <div>
+              <label class="font-bold text-muted">Sexo</label>
+              <select id="c-sex" onchange="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold">
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-muted">Atividade</label>
+              <select id="c-act" onchange="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold">
+                <option value="1.375">Leve (1-3x)</option>
+                <option value="1.55" selected>Moderada (3-5x)</option>
+                <option value="1.725">Intensa (6-7x)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-muted">Objetivo</label>
+              <select id="c-goal" onchange="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold">
+                <option value="bulking">Hipertrofia (+300)</option>
+                <option value="cutting">Emagrecimento (-400)</option>
+                <option value="maintain">Manutenção</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted">Água Diária</div><div id="out-water" class="font-mono-num font-extrabold text-base text-accent">2625 ml</div></div>
+            <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted">TMB Basal</div><div id="out-tmb" class="font-mono-num font-extrabold text-base">1724 kcal</div></div>
+            <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted">Meta GET</div><div id="out-get" class="font-mono-num font-extrabold text-base text-primary">2972 kcal</div></div>
+            <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted">IMC</div><div id="out-imc" class="font-mono-num font-extrabold text-base">24.5</div></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted">Proteína</div><div id="out-prot" class="font-mono-num font-extrabold text-primary text-sm mt-0.5">150g</div></div>
+            <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted">Carboidrato</div><div id="out-carb" class="font-mono-num font-extrabold text-main text-sm mt-0.5">350g</div></div>
+            <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted">Gordura</div><div id="out-fat" class="font-mono-num font-extrabold text-accent text-sm mt-0.5">75g</div></div>
+          </div>
+        </div>
+
+        <!-- 1RM + Zonas de Frequência Cardíaca -->
+        <div class="space-y-5">
+          <div class="glass-card rounded-3xl p-5 space-y-3">
+            <h3 class="font-extrabold text-base">🏋️ Calculadora de 1RM (Carga Máxima)</h3>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div><label class="font-bold text-muted">Carga Levantada (kg)</label><input id="c-rm-w" type="number" value="60" oninput="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+              <div><label class="font-bold text-muted">Repetições Feitas</label><input id="c-rm-r" type="number" value="10" oninput="runAllCalculators()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+            </div>
+            <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono-num">
+              <div class="glass-elevated rounded-xl p-2"><div class="text-muted font-sans">1RM</div><div id="out-1rm" class="font-extrabold text-primary text-sm">80 kg</div></div>
+              <div class="bg-input border border-theme rounded-xl p-2"><div class="text-muted font-sans">90%</div><div id="out-rm90" class="font-bold text-sm">72 kg</div></div>
+              <div class="bg-input border border-theme rounded-xl p-2"><div class="text-muted font-sans">75%</div><div id="out-rm75" class="font-bold text-sm">60 kg</div></div>
+              <div class="bg-input border border-theme rounded-xl p-2"><div class="text-muted font-sans">60%</div><div id="out-rm60" class="font-bold text-sm">48 kg</div></div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-3xl p-5 space-y-3">
+            <h3 class="font-extrabold text-base">🫀 Zonas de Frequência Cardíaca (Cardio)</h3>
+            <p class="text-xs text-muted">FC Máxima Estimada: <strong id="out-fc-max" class="font-mono-num text-primary">195 bpm</strong></p>
+            <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono-num">
+              <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted font-sans">Queima (60-70%)</div><div id="out-z2" class="font-extrabold text-accent mt-0.5">117-137</div></div>
+              <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted font-sans">Aeróbico (70-80%)</div><div id="out-z3" class="font-extrabold text-primary mt-0.5">137-156</div></div>
+              <div class="bg-input border border-theme rounded-xl p-2.5"><div class="text-muted font-sans">HIIT (80-90%)</div><div id="out-z4" class="font-extrabold text-red-400 mt-0.5">156-176</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 7: PERSONAL GEMINI (DICAS FACILITADAS + CONSULTOR IA)
+         ====================================================================== -->
+    <section id="tab-gemini" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-xl sm:text-2xl">✨ Personal GEMINI — Treinador IA</h1>
+          <p class="text-xs text-muted">Dicas facilitadas em 1 clique, revisão da sua planilha e chat ao vivo</p>
+        </div>
+        <button onclick="toggleEditPanel('gemini-profile-panel')" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-extrabold">
+          ✏️ Ajustar Perfil do Personal
+        </button>
+      </div>
+
+      <!-- Painel Retrátil: Ajustar Perfil do Personal GEMINI -->
+      <div id="gemini-profile-panel" class="hidden glass-card rounded-3xl p-4 sm:p-5 border-2 space-y-3" style="border-color: var(--primary);">
+        <h3 class="font-extrabold text-sm">✏️ Configurar Estilo do Personal GEMINI</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="font-bold text-muted">Foco Principal do Treinador</label>
+            <input id="gem-focus" type="text" value="Hipertrofia limpa e condicionamento físico" onchange="saveGeminiPrefs()"
+                   class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold" />
+          </div>
+          <div>
+            <label class="font-bold text-muted">Nível de Detalhe das Respostas</label>
+            <select id="gem-style" onchange="saveGeminiPrefs()" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-bold">
+              <option value="direto" selected>Direto ao Ponto (Dicas rápidas e fáceis)</option>
+              <option value="equilibrado">Equilibrado (Técnica + Motivação)</option>
+              <option value="detalhado">Técnico Detalhado (Biomecânica e Fisiologia)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Painel de Dicas Rápidas em 1 Clique -->
+        <div class="lg:col-span-5 glass-card rounded-3xl p-5 space-y-3">
+          <h3 class="font-extrabold text-base">⚡ Dicas Rápidas em 1 Clique</h3>
+          <p class="text-xs text-muted">Toque em qualquer botão para receber orientações práticas na hora:</p>
+          <div class="space-y-2">
+            <button onclick="quickAskGemini('Me dê 3 dicas práticas e fáceis para melhorar minha hipertrofia nos treinos desta semana.')" class="w-full text-left p-3 rounded-2xl glass-elevated text-xs font-extrabold hover:brightness-110 flex items-center justify-between">
+              <span>⚡ Melhorar Hipertrofia</span><span class="text-primary">→</span>
+            </button>
+            <button onclick="quickAskGemini('Como turbinar os resultados do meu Cardio Final Obrigatório sem perder massa muscular?')" class="w-full text-left p-3 rounded-2xl glass-elevated text-xs font-extrabold hover:brightness-110 flex items-center justify-between">
+              <span>🔥 Turbinar Cardio Final</span><span class="text-primary">→</span>
+            </button>
+            <button onclick="quickAskGemini('Quais ajustes simples de postura e respiração evitam lesões no Agachamento e Supino?')" class="w-full text-left p-3 rounded-2xl glass-elevated text-xs font-extrabold hover:brightness-110 flex items-center justify-between">
+              <span>🛡️ Evitar Lesões e Ajustar Postura</span><span class="text-primary">→</span>
+            </button>
+            <button onclick="quickAskGemini('Como estruturar treinos e cardio para melhorar condicionamento físico e corrida 2.400m (TAF)?')" class="w-full text-left p-3 rounded-2xl glass-elevated text-xs font-extrabold hover:brightness-110 flex items-center justify-between">
+              <span>🏃 Preparação Física / TAF</span><span class="text-primary">→</span>
+            </button>
+            <button onclick="analyzeMyWorkoutWithGemini()" class="w-full p-3.5 rounded-2xl btn-primary text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2">
+              <span>📋</span> Analisar Meu Treino Atual
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Livre com Personal GEMINI -->
+        <div class="lg:col-span-7 glass-card rounded-3xl flex flex-col h-[520px] overflow-hidden">
+          <div class="p-4 border-b border-theme flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full animate-pulse" style="background: var(--primary);"></span>
+              <span class="font-extrabold text-sm">Consultoria ao Vivo — Personal GEMINI</span>
+            </div>
+            <button onclick="clearGeminiChat()" class="text-xs text-muted hover:text-main font-bold">Limpar</button>
+          </div>
+          <div id="gemini-chat-box" class="flex-1 overflow-y-auto p-4 space-y-3">
+            <div class="flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-xl glass-elevated flex items-center justify-center shrink-0">🤖</div>
+              <div class="glass-elevated rounded-2xl rounded-tl-sm p-3.5 text-xs sm:text-sm max-w-[85%] leading-relaxed">
+                Fala, campeão! Sou o <strong>Personal GEMINI</strong> da 💪🏻ID ESPORTIVO ⚽. Use os botões ao lado para dicas instantâneas ou mande sua dúvida aqui embaixo!
+              </div>
+            </div>
+          </div>
+          <form onsubmit="submitGeminiChat(event)" class="p-3 border-t border-theme bg-input flex gap-2">
+            <input id="gemini-input" type="text" placeholder="Pergunte sobre execução, descanso, cardio, dieta..." class="flex-1 bg-solid border border-theme rounded-xl px-4 py-2.5 text-sm text-main focus:outline-none" />
+            <button id="gemini-send-btn" type="submit" class="px-5 py-2.5 rounded-xl btn-primary font-extrabold text-xs sm:text-sm">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ABA 8: PERSONALIZAR & BACKUP (10 PALETAS + COLOR PICKER + JSON)
+         ====================================================================== -->
+    <section id="tab-settings" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-xl sm:text-2xl">🎨 Personalizar Cores, Som & Backup</h1>
+          <p class="text-xs text-muted">10 paletas exclusivas, seletor livre de cores, alerta sonoro e backup em JSON</p>
+        </div>
+        <button onclick="toggleBaseLightDark()" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-extrabold">
+          ✏️ Alternar Base Escura / Clara
+        </button>
+      </div>
+
+      <!-- 10 Paletas + Seletor de Cor Customizada -->
+      <div class="glass-card rounded-3xl p-5 sm:p-6 space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-extrabold text-base sm:text-lg">Paletas de Cores da Plataforma</h2>
+            <p class="text-xs text-muted">Clique em uma paleta pronta ou crie sua combinação personalizada abaixo</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 bg-input border border-theme p-3 rounded-2xl">
+            <label class="flex items-center gap-1.5 text-xs font-bold">
+              Primária <input id="cp-primary" type="color" oninput="applyCustomColors()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0" />
+            </label>
+            <label class="flex items-center gap-1.5 text-xs font-bold">
+              Destaque <input id="cp-accent" type="color" oninput="applyCustomColors()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0" />
+            </label>
+          </div>
+        </div>
+        <div id="themes-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+      </div>
+
+      <!-- Configurações de Som & Backup JSON -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="glass-card rounded-3xl p-5 space-y-3">
+          <h3 class="font-extrabold text-base">🔔 Alerta Sonoro do Descanso</h3>
+          <p class="text-xs text-muted">Toca um aviso sonoro suave ao finalizar a contagem regressiva do descanso entre séries.</p>
+          <div class="flex items-center gap-3 pt-1">
+            <button onclick="toggleSoundSetting()" id="btn-sound-toggle" class="px-4 py-2.5 rounded-xl btn-primary text-xs font-extrabold">🔊 Som Ativado</button>
+            <button onclick="playBeep(880, 0.16, 3)" class="px-4 py-2.5 rounded-xl glass-elevated text-xs font-bold">Testar Bip</button>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 space-y-3">
+          <h3 class="font-extrabold text-base">💾 Backup & Restauração (JSON)</h3>
+          <p class="text-xs text-muted">Salve ou transfira seus treinos, histórico, PRs e cores para outro dispositivo.</p>
+          <div class="flex flex-wrap gap-2 pt-1">
+            <button onclick="exportBackupJSON()" class="px-4 py-2.5 rounded-xl btn-primary text-xs font-extrabold">⬇️ Exportar JSON</button>
+            <label class="px-4 py-2.5 rounded-xl glass-elevated text-xs font-bold cursor-pointer hover:brightness-110">
+              ⬆️ Importar JSON
+              <input type="file" accept="application/json" onchange="importBackupJSON(event)" class="hidden" />
+            </label>
+            <button onclick="openResetConfirmModal()" class="px-4 py-2.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-bold">🗑️ Restaurar Padrões</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       BARRA INFERIOR MOBILE FIXA (USO COM UMA MÃO NA ACADEMIA)
+       ======================================================================== -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 glass-card border-t border-theme px-2 py-2">
+    <div class="grid grid-cols-5 gap-1 max-w-md mx-auto">
+      <button onclick="switchTab('dashboard')" id="mob-dashboard" class="mob-nav-btn flex flex-col items-center py-1 text-[10px] font-bold text-muted"><span class="text-lg">🏠</span>Início</button>
+      <button onclick="switchTab('builder')" id="mob-builder" class="mob-nav-btn flex flex-col items-center py-1 text-[10px] font-bold text-muted"><span class="text-lg">🧩</span>Montar</button>
+      <button onclick="switchTab('active')" id="mob-active" class="mob-nav-btn flex flex-col items-center py-1 text-[10px] font-bold text-muted"><span class="text-lg">🏋️</span>Treinar</button>
+      <button onclick="switchTab('gemini')" id="mob-gemini" class="mob-nav-btn flex flex-col items-center py-1 text-[10px] font-bold text-muted"><span class="text-lg">✨</span>GEMINI</button>
+      <button onclick="toggleMobileDrawer(true)" class="flex flex-col items-center py-1 text-[10px] font-bold text-muted"><span class="text-lg">☰</span>Mais</button>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       CRONÔMETRO DE DESCANSO FLUTUANTE (STICKY TIMER)
+       ======================================================================== -->
+  <div id="rest-timer-widget" class="hidden fixed bottom-20 lg:bottom-6 right-4 left-4 sm:left-auto sm:w-80 z-50 bg-solid rounded-3xl p-4 shadow-2xl border-2" style="border-color: var(--primary);">
+    <div class="flex items-center justify-between mb-3">
+      <span class="font-extrabold text-sm">⏱️ Descanso Entre Séries</span>
+      <button onclick="closeRestTimer()" class="w-7 h-7 rounded-lg glass-elevated text-xs font-bold">✕</button>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative w-20 h-20 flex items-center justify-center shrink-0">
+        <svg class="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(148,163,184,0.2)" stroke-width="6"></circle>
+          <circle id="rest-ring" cx="40" cy="40" r="34" fill="none" stroke="var(--primary)" stroke-width="6"
+                  stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.3s linear;"></circle>
+        </svg>
+        <span id="rest-display" class="absolute font-mono-num font-extrabold text-lg">01:00</span>
+      </div>
+      <div class="flex-1 space-y-2">
+        <div class="grid grid-cols-2 gap-1.5">
+          <button onclick="adjustRest(-15)" class="py-1.5 rounded-lg glass-elevated text-xs font-mono-num font-bold">-15s</button>
+          <button onclick="adjustRest(15)" class="py-1.5 rounded-lg glass-elevated text-xs font-mono-num font-bold">+15s</button>
+        </div>
+        <div class="flex gap-1.5">
+          <button onclick="toggleRest()" id="rest-toggle-btn" class="flex-1 py-1.5 rounded-lg btn-primary text-xs font-extrabold">Pausar</button>
+          <button onclick="resetRest()" class="px-3 py-1.5 rounded-lg glass-elevated text-xs font-bold">Zerar</button>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-5 gap-1.5 mt-3 pt-3 border-t border-theme font-mono-num">
+      <button onclick="startRest(30)" class="py-1 rounded-lg bg-input border border-theme text-[11px] font-bold">30s</button>
+      <button onclick="startRest(45)" class="py-1 rounded-lg bg-input border border-theme text-[11px] font-bold">45s</button>
+      <button onclick="startRest(60)" class="py-1 rounded-lg bg-input border border-theme text-[11px] font-bold">60s</button>
+      <button onclick="startRest(90)" class="py-1 rounded-lg bg-input border border-theme text-[11px] font-bold">90s</button>
+      <button onclick="startRest(120)" class="py-1 rounded-lg bg-input border border-theme text-[11px] font-bold">120s</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: GUIA AMPLIADO DE EXECUÇÃO (COM CÂMERA LENTA 0.5x / 1x)
+       ======================================================================== -->
+  <div id="modal-guide" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-solid border border-theme rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl">
+      <div class="p-4 border-b border-theme flex items-center justify-between">
+        <div>
+          <span id="guide-muscle" class="text-[11px] font-extrabold uppercase text-primary">Grupo</span>
+          <h3 id="guide-title" class="font-extrabold text-lg">Exercício</h3>
+        </div>
+        <button onclick="closeModal('modal-guide')" class="w-9 h-9 rounded-xl glass-elevated font-bold text-sm">✕</button>
+      </div>
+      <div class="p-5 space-y-4 max-h-[82vh] overflow-y-auto">
+        <div id="guide-stage-wrap" class="w-full"></div>
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-input border border-theme rounded-2xl p-2.5">
+          <button onclick="toggleGuidePlay()" id="guide-play-btn" class="px-3.5 py-1.5 rounded-xl glass-elevated text-xs font-extrabold">⏸ Pausar</button>
+          <div class="flex items-center gap-1.5">
+            <button onclick="setGuideSpeed(false)" id="guide-speed-1x" class="px-3 py-1.5 rounded-xl btn-primary text-xs font-extrabold">1x Normal</button>
+            <button onclick="setGuideSpeed(true)" id="guide-speed-slow" class="px-3 py-1.5 rounded-xl glass-elevated text-xs font-extrabold">0.5x Lento</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div class="glass-elevated rounded-2xl p-3.5">
+            <h4 class="font-extrabold text-primary uppercase text-xs mb-1">✅ Execução & Postura</h4>
+            <p id="guide-cue" class="leading-relaxed"></p>
+          </div>
+          <div class="glass-elevated rounded-2xl p-3.5">
+            <h4 class="font-extrabold text-accent uppercase text-xs mb-1">🌬️ Respiração & Erros</h4>
+            <p id="guide-mistakes" class="leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: BIBLIOTECA (ADICIONAR / TROCAR EXERCÍCIO OU CARDIO)
+       ======================================================================== -->
+  <div id="modal-library" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-solid border border-theme rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="p-4 border-b border-theme flex items-center justify-between">
+        <div>
+          <h3 id="lib-title" class="font-extrabold text-lg">Selecionar Exercício</h3>
+          <p id="lib-sub" class="text-xs text-muted">Escolha um exercício da biblioteca</p>
+        </div>
+        <button onclick="closeModal('modal-library')" class="w-9 h-9 rounded-xl glass-elevated font-bold text-sm">✕</button>
+      </div>
+      <div id="lib-controls" class="p-3 border-b border-theme bg-input space-y-2">
+        <input id="lib-search" type="text" oninput="renderModalLibraryList()" placeholder="Buscar exercício..." class="w-full bg-solid border border-theme rounded-xl px-3.5 py-2 text-sm text-main" />
+        <div id="lib-chips" class="flex gap-1.5 overflow-x-auto pb-1"></div>
+      </div>
+      <div id="lib-list" class="flex-1 overflow-y-auto p-4 space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CRIAR / EDITAR EXERCÍCIO PERSONALIZADO
+       ======================================================================== -->
+  <div id="modal-custom-ex" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <form onsubmit="saveCustomExercise(event)" class="bg-solid border border-theme rounded-3xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-lg">✏️ Criar / Editar Exercício</h3>
+        <button type="button" onclick="closeModal('modal-custom-ex')" class="w-8 h-8 rounded-xl glass-elevated text-xs font-bold">✕</button>
+      </div>
+      <input type="hidden" id="ce-edit-id" value="" />
+      <div class="space-y-3 text-xs">
+        <div><label class="font-bold text-muted">Nome do Exercício*</label><input id="ce-name" required type="text" placeholder="Ex.: Elevação Pélvica com Barra" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-sm font-bold" /></div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-bold text-muted">Grupo Muscular</label>
+            <select id="ce-muscle" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2.5 font-bold">
+              <option>Peito</option><option>Costas</option><option>Pernas</option><option>Ombros</option><option>Bíceps</option><option>Tríceps</option><option>Abdômen</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-muted">Animação GIF</label>
+            <select id="ce-anim" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2.5 font-bold">
+              <option value="bench">Empurrar / Supino</option>
+              <option value="row">Puxar / Remada</option>
+              <option value="squat">Agachamento / Pernas</option>
+              <option value="shoulder">Ombros / Elevação</option>
+              <option value="curl">Rosca Bíceps</option>
+              <option value="triceps">Tríceps Polia</option>
+              <option value="abs">Abdômen / Core</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div><label class="font-bold text-muted">Séries</label><input id="ce-sets" type="number" value="4" min="1" max="10" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Repetições</label><input id="ce-reps" type="text" value="10-12" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+          <div><label class="font-bold text-muted">Descanso (s)</label><input id="ce-rest" type="number" value="60" step="15" min="15" class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2 font-mono-num font-bold" /></div>
+        </div>
+        <div><label class="font-bold text-muted">Dica Facilitada de Execução</label><textarea id="ce-cue" rows="2" placeholder="Cadência controlada, postura firme e respiração coordenada..." class="mt-1 w-full bg-input border border-theme rounded-xl px-3 py-2"></textarea></div>
+      </div>
+      <button type="submit" class="w-full py-3 rounded-xl btn-primary font-extrabold text-sm">💾 Salvar na Biblioteca & Ficha</button>
+    </form>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONCLUSÃO DO TREINO
+       ======================================================================== -->
+  <div id="modal-finish" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-solid rounded-3xl max-w-md w-full p-6 text-center space-y-4 border-2 shadow-2xl" style="border-color: var(--primary);">
+      <div class="text-5xl">🏆</div>
+      <div>
+        <h3 class="font-extrabold text-2xl">TREINO CONCLUÍDO!</h3>
+        <p class="text-xs sm:text-sm text-muted mt-1">Sensacional! Mais uma sessão paga na <strong>💪🏻ID ESPORTIVO ⚽</strong>.</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 font-mono-num">
+        <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted font-sans">Volume</div><div id="fin-vol" class="font-extrabold text-base text-primary">0 kg</div></div>
+        <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted font-sans">Tempo</div><div id="fin-time" class="font-extrabold text-base text-accent">00:00</div></div>
+        <div class="glass-elevated rounded-2xl p-3"><div class="text-[10px] text-muted font-sans">XP Ganho</div><div id="fin-xp" class="font-extrabold text-base">+150</div></div>
+      </div>
+      <div id="fin-prs" class="hidden bg-input border border-theme rounded-2xl p-3 text-xs font-bold text-primary"></div>
+      <button onclick="closeModal('modal-finish'); switchTab('dashboard');" class="w-full py-3 rounded-xl btn-primary font-extrabold text-sm">Ir para o Dashboard 💪</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONFIRMAR RESET (SEM confirm())
+       ======================================================================== -->
+  <div id="modal-reset" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-solid border border-theme rounded-3xl max-w-sm w-full p-5 space-y-4 text-center">
+      <div class="text-4xl">⚠️</div>
+      <h3 class="font-extrabold text-lg">Restaurar padrões de fábrica?</h3>
+      <p class="text-xs text-muted">Isso limpará treinos editados, medidas, PRs e histórico salvos neste navegador.</p>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closeModal('modal-reset')" class="py-2.5 rounded-xl glass-elevated text-xs font-bold">Cancelar</button>
+        <button onclick="confirmResetAll()" class="py-2.5 rounded-xl bg-red-500 text-white text-xs font-extrabold">Sim, Restaurar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div id="toast-box" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm"></div>
+
+  <!-- ========================================================================
+       JAVASCRIPT COMPLETO DA PLATAFORMA
+       ======================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. 10 PALETAS DE CORES COMPLETAS
+    // =========================================================================
+    const THEMES = [
+      { id: 'neon_volt', name: 'Neon Volt', mode: 'dark', preview: ['#070b11','#101724','#bef264','#38bdf8'],
+        vars: { '--bg-main':'#070b11','--bg-surface':'rgba(16,23,36,0.88)','--bg-solid':'#101724','--bg-elevated':'rgba(25,36,56,0.88)','--bg-input':'#0b111c','--border-color':'rgba(255,255,255,0.09)','--border-glow':'rgba(190,242,100,0.35)','--text-main':'#f4f7fb','--text-muted':'#94a3b8','--primary':'#bef264','--primary-contrast':'#070b11','--primary-glow':'rgba(190,242,100,0.28)','--accent':'#38bdf8' } },
+      { id: 'chama_atletica', name: 'Chama Atlética', mode: 'dark', preview: ['#120907','#1e110d','#ff5722','#fbbf24'],
+        vars: { '--bg-main':'#120907','--bg-surface':'rgba(30,17,13,0.9)','--bg-solid':'#1e110d','--bg-elevated':'rgba(46,26,20,0.9)','--bg-input':'#160c09','--border-color':'rgba(255,140,90,0.14)','--border-glow':'rgba(255,87,34,0.4)','--text-main':'#fff7f2','--text-muted':'#bfa397','--primary':'#ff5722','--primary-contrast':'#ffffff','--primary-glow':'rgba(255,87,34,0.34)','--accent':'#fbbf24' } },
+      { id: 'azul_campeao', name: 'Azul Campeão', mode: 'dark', preview: ['#060d1c','#0d1930','#38bdf8','#818cf8'],
+        vars: { '--bg-main':'#060d1c','--bg-surface':'rgba(13,25,48,0.9)','--bg-solid':'#0d1930','--bg-elevated':'rgba(20,38,71,0.9)','--bg-input':'#081224','--border-color':'rgba(56,189,248,0.16)','--border-glow':'rgba(56,189,248,0.4)','--text-main':'#f0f9ff','--text-muted':'#8fb3d9','--primary':'#38bdf8','--primary-contrast':'#041224','--primary-glow':'rgba(56,189,248,0.32)','--accent':'#818cf8' } },
+      { id: 'roxo_elite', name: 'Roxo Elite', mode: 'dark', preview: ['#0f091a','#1b122e','#c084fc','#f472b6'],
+        vars: { '--bg-main':'#0f091a','--bg-surface':'rgba(27,18,46,0.9)','--bg-solid':'#1b122e','--bg-elevated':'rgba(38,26,64,0.9)','--bg-input':'#130d21','--border-color':'rgba(192,132,252,0.16)','--border-glow':'rgba(192,132,252,0.4)','--text-main':'#faf5ff','--text-muted':'#a799c4','--primary':'#c084fc','--primary-contrast':'#12071f','--primary-glow':'rgba(192,132,252,0.34)','--accent':'#f472b6' } },
+      { id: 'ouro_black', name: 'Ouro Black', mode: 'dark', preview: ['#090909','#151515','#f5c542','#fde047'],
+        vars: { '--bg-main':'#090909','--bg-surface':'rgba(21,21,21,0.92)','--bg-solid':'#151515','--bg-elevated':'rgba(34,34,34,0.92)','--bg-input':'#0f0f0f','--border-color':'rgba(245,197,66,0.16)','--border-glow':'rgba(245,197,66,0.4)','--text-main':'#fafafa','--text-muted':'#a3a3a3','--primary':'#f5c542','--primary-contrast':'#090909','--primary-glow':'rgba(245,197,66,0.32)','--accent':'#fde047' } },
+      { id: 'esmeralda_pro', name: 'Esmeralda Pro', mode: 'dark', preview: ['#05120e','#0c211a','#34d399','#2dd4bf'],
+        vars: { '--bg-main':'#05120e','--bg-surface':'rgba(12,33,26,0.9)','--bg-solid':'#0c211a','--bg-elevated':'rgba(19,48,38,0.9)','--bg-input':'#081913','--border-color':'rgba(52,211,153,0.16)','--border-glow':'rgba(52,211,153,0.4)','--text-main':'#ecfdf5','--text-muted':'#86b5a5','--primary':'#34d399','--primary-contrast':'#041c13','--primary-glow':'rgba(52,211,153,0.32)','--accent':'#2dd4bf' } },
+      { id: 'claro_esportivo', name: 'Claro Esportivo', mode: 'light', preview: ['#eef2f7','#ffffff','#2563eb','#f97316'],
+        vars: { '--bg-main':'#eef2f7','--bg-surface':'rgba(255,255,255,0.92)','--bg-solid':'#ffffff','--bg-elevated':'rgba(248,250,252,0.95)','--bg-input':'#e2e8f0','--border-color':'rgba(15,23,42,0.10)','--border-glow':'rgba(37,99,235,0.35)','--text-main':'#0f172a','--text-muted':'#475569','--primary':'#2563eb','--primary-contrast':'#ffffff','--primary-glow':'rgba(37,99,235,0.28)','--accent':'#f97316' } },
+      { id: 'ciano_cyber', name: 'Ciano Cyber', mode: 'dark', preview: ['#041318','#09222b','#00f5d4','#00bbf9'],
+        vars: { '--bg-main':'#041318','--bg-surface':'rgba(9,34,43,0.9)','--bg-solid':'#09222b','--bg-elevated':'rgba(14,48,61,0.9)','--bg-input':'#061a21','--border-color':'rgba(0,245,212,0.16)','--border-glow':'rgba(0,245,212,0.4)','--text-main':'#ecfeff','--text-muted':'#88b8c4','--primary':'#00f5d4','--primary-contrast':'#041318','--primary-glow':'rgba(0,245,212,0.32)','--accent':'#00bbf9' } },
+      { id: 'sunset_turbo', name: 'Sunset Turbo', mode: 'dark', preview: ['#140a12','#22111f','#fb7185','#f59e0b'],
+        vars: { '--bg-main':'#140a12','--bg-surface':'rgba(34,17,31,0.9)','--bg-solid':'#22111f','--bg-elevated':'rgba(48,24,44,0.9)','--bg-input':'#1a0d17','--border-color':'rgba(251,113,133,0.16)','--border-glow':'rgba(251,113,133,0.4)','--text-main':'#fff1f2','--text-muted':'#c49bb0','--primary':'#fb7185','--primary-contrast':'#140a12','--primary-glow':'rgba(251,113,133,0.34)','--accent':'#f59e0b' } },
+      { id: 'rosa_power', name: 'Rosa Power', mode: 'dark', preview: ['#151118','#221b26','#ff4d8d','#c084fc'],
+        vars: { '--bg-main':'#151118','--bg-surface':'rgba(34,27,38,0.9)','--bg-solid':'#221b26','--bg-elevated':'rgba(47,38,54,0.9)','--bg-input':'#1a151e','--border-color':'rgba(255,77,141,0.16)','--border-glow':'rgba(255,77,141,0.4)','--text-main':'#fff1f5','--text-muted':'#b5a2b0','--primary':'#ff4d8d','--primary-contrast':'#ffffff','--primary-glow':'rgba(255,77,141,0.34)','--accent':'#c084fc' } }
+    ];
+
+    // =========================================================================
+    // 2. BIBLIOTECA COMPLETA DE EXERCÍCIOS + CARDIO OBRIGATÓRIO
+    // =========================================================================
+    const BASE_EXERCISES = [
+      { id: 'supino_reto', name: 'Supino Reto com Barra', muscle: 'Peito', anim: 'bench', defaultWeight: 40,
+        cue: 'Escápulas fechadas no banco, desça a barra em 2s até o meio do peito e empurre expirando.',
+        mistakes: 'Evite abrir os cotovelos a 90° ou tirar os glúteos do banco.' },
+      { id: 'supino_inclinado', name: 'Supino Inclinado com Halteres', muscle: 'Peito', anim: 'bench', defaultWeight: 18,
+        cue: 'Banco a 30°-45°. Desça alongando o peitoral superior e suba convergindo sem bater os halteres.',
+        mistakes: 'Inspire na descida. Não eleve os ombros perto das orelhas.' },
+      { id: 'crucifixo_banco', name: 'Crucifixo Reto / Peck Deck', muscle: 'Peito', anim: 'bench', defaultWeight: 12,
+        cue: 'Cotovelos semiflexionados fixos, abra bem os braços e feche esmagando o centro do peito.',
+        mistakes: 'Não dobre demais os cotovelos transformando em supino.' },
+      { id: 'puxada_frontal', name: 'Puxada Frontal na Polia', muscle: 'Costas', anim: 'row', defaultWeight: 45,
+        cue: 'Peito aberto, puxe a barra até a clavícula levando os cotovelos para baixo e para trás.',
+        mistakes: 'Expire puxando. Evite balançar o tronco para trás.' },
+      { id: 'remada_baixa', name: 'Remada Baixa com Triângulo', muscle: 'Costas', anim: 'row', defaultWeight: 40,
+        cue: 'Coluna ereta, puxe o triângulo em direção ao umbigo fechando bem as escápulas.',
+        mistakes: 'Não arredonde a lombar no retorno da carga.' },
+      { id: 'remada_curvada', name: 'Remada Curvada com Barra', muscle: 'Costas', anim: 'row', defaultWeight: 40,
+        cue: 'Tronco inclinado a 45° com coluna neutra, puxe a barra rente às coxas até o abdômen.',
+        mistakes: 'Mantenha o abdômen travado para proteger a lombar.' },
+      { id: 'agachamento_livre', name: 'Agachamento Livre com Barra', muscle: 'Pernas', anim: 'squat', defaultWeight: 60,
+        cue: 'Pés na largura dos ombros, empurre o quadril para trás e desça mantendo o peito alto.',
+        mistakes: 'Inspire travando o core antes de descer; não deixe joelhos fecharem.' },
+      { id: 'leg_press', name: 'Leg Press 45°', muscle: 'Pernas', anim: 'squat', defaultWeight: 120,
+        cue: 'Lombar totalmente apoiada no encosto, desça até 90° e empurre pelo calcanhar.',
+        mistakes: 'Nunca trave (hiperextenda) os joelhos no topo.' },
+      { id: 'cadeira_extensora', name: 'Cadeira Extensora', muscle: 'Pernas', anim: 'squat', defaultWeight: 45,
+        cue: 'Estenda totalmente os joelhos segurando 1 segundo no topo e desça devagar.',
+        mistakes: 'Evite dar trancos no início da subida.' },
+      { id: 'stiff_barra', name: 'Stiff com Barra (Posterior)', muscle: 'Pernas', anim: 'squat', defaultWeight: 40,
+        cue: 'Joelhos semiflexionados fixos, empurre o quadril para trás deslizando a barra rente às pernas.',
+        mistakes: 'Coluna 100% reta durante toda a descida.' },
+      { id: 'panturrilha_pe', name: 'Panturrilha em Pé', muscle: 'Pernas', anim: 'squat', defaultWeight: 50,
+        cue: 'Alongue bem o calcanhar para baixo e suba o máximo na ponta dos pés pausando 1s.',
+        mistakes: 'Evite movimentos curtos e apressados.' },
+      { id: 'desenvolvimento_halter', name: 'Desenvolvimento com Halteres', muscle: 'Ombros', anim: 'shoulder', defaultWeight: 14,
+        cue: 'Abdômen firme, empurre os halteres acima da cabeça e desça até a linha das orelhas.',
+        mistakes: 'Não arqueie excessivamente a lombar.' },
+      { id: 'elevacao_lateral', name: 'Elevação Lateral com Halteres', muscle: 'Ombros', anim: 'shoulder', defaultWeight: 8,
+        cue: 'Eleve os braços lateralmente até a altura dos ombros com descida controlada em 2s.',
+        mistakes: 'Não balance o tronco para impulsionar o peso.' },
+      { id: 'rosca_direta', name: 'Rosca Direta com Barra', muscle: 'Bíceps', anim: 'curl', defaultWeight: 20,
+        cue: 'Cotovelos travados ao lado do tronco, suba contraindo forte o bíceps no topo.',
+        mistakes: 'Não jogue os cotovelos para frente.' },
+      { id: 'rosca_martelo', name: 'Rosca Martelo com Halteres', muscle: 'Bíceps', anim: 'curl', defaultWeight: 12,
+        cue: 'Pegada neutra (polegares para cima), movimento limpo e descida controlada.',
+        mistakes: 'Evite soltar o peso rápido na descida.' },
+      { id: 'triceps_corda', name: 'Tríceps Corda na Polia', muscle: 'Tríceps', anim: 'triceps', defaultWeight: 25,
+        cue: 'Cotovelos fixos junto às costelas, estenda totalmente abrindo a corda no final.',
+        mistakes: 'Não suba os ombros nem balance os cotovelos.' },
+      { id: 'triceps_testa', name: 'Tríceps Testa com Barra W', muscle: 'Tríceps', anim: 'triceps', defaultWeight: 20,
+        cue: 'Deitado no banco, desça a barra próximo à testa mantendo os braços estáveis.',
+        mistakes: 'Evite abrir os cotovelos para os lados.' },
+      { id: 'abdominal_supra', name: 'Abdominal Supra no Colchonete', muscle: 'Abdômen', anim: 'abs', defaultWeight: 0,
+        cue: 'Enrole a coluna tirando as escápulas do chão e solte todo o ar na contração.',
+        mistakes: 'Não puxe o pescoço com as mãos.' },
+      { id: 'prancha_core', name: 'Prancha Isométrica Core', muscle: 'Abdômen', anim: 'abs', defaultWeight: 0,
+        cue: 'Antebraços apoiados, corpo reto da cabeça aos pés e abdômen fortemente contraído.',
+        mistakes: 'Não deixe o quadril cair nem subir demais.' }
+    ];
+
+    const CARDIO_OPTIONS = [
+      { id: 'esteira', name: 'Esteira (Caminhada Inclinada / Corrida)', anim: 'cardio_run', minutes: 20, intensity: 'Moderada (65-75% FC)', cue: 'Postura ereta, passos firmes e respire de forma ritmada sem apoiar no painel.', mistakes: 'Evite segurar nas barras laterais.' },
+      { id: 'bike', name: 'Bike Indoor / Ergométrica', anim: 'cardio_bike', minutes: 20, intensity: 'Moderada (70-80% FC)', cue: 'Selim na altura do quadril e cadência constante entre 85 e 95 RPM.', mistakes: 'Não deixe os joelhos abrirem para fora.' },
+      { id: 'escada', name: 'Simulador de Escada', anim: 'cardio_stairs', minutes: 15, intensity: 'Moderada a Alta', cue: 'Pise com o pé inteiro no degrau mantendo o tronco erguido.', mistakes: 'Não se debruce sobre os corrimãos.' },
+      { id: 'eliptico', name: 'Elíptico / Transport', anim: 'cardio_stairs', minutes: 20, intensity: 'Moderada • Baixo Impacto', cue: 'Sincronize braços e pernas mantendo o core ativo.', mistakes: 'Não tire os calcanhares dos pedais.' },
+      { id: 'corrida_livre', name: 'Corrida Livre / 2.400m TAF', anim: 'cardio_run', minutes: 15, intensity: 'Alta (80-90% FC)', cue: 'Ritmo constante, 2 passos inspirando e 2 expirando, acelerando nos últimos 400m.', mistakes: 'Não saia rápido demais no início.' },
+      { id: 'hiit', name: 'HIIT Metabólico (Tiros 1min x 1min)', anim: 'cardio_run', minutes: 15, intensity: 'Alta Intensidade', cue: 'Alterne 1 minuto forte com 1 minuto leve e finalize com 2 min de desaquecimento.', mistakes: 'Não pule o desaquecimento final.' }
+    ];
+
+    const SPLIT_CONFIGS = [
+      { id: 'AB', label: 'AB', sub: '2 Treinos', days: [
+        { letter: 'A', name: 'Treino A — Superiores Completo', weekdays: [1, 4], exIds: ['supino_reto','puxada_frontal','desenvolvimento_halter','remada_baixa','rosca_direta','triceps_corda'] },
+        { letter: 'B', name: 'Treino B — Inferiores & Core', weekdays: [2, 5], exIds: ['agachamento_livre','leg_press','cadeira_extensora','stiff_barra','panturrilha_pe','prancha_core'] }
+      ]},
+      { id: 'ABC', label: 'ABC', sub: '3 Treinos', days: [
+        { letter: 'A', name: 'Treino A — Peito, Ombros & Tríceps', weekdays: [1, 4], exIds: ['supino_reto','supino_inclinado','crucifixo_banco','desenvolvimento_halter','elevacao_lateral','triceps_corda'] },
+        { letter: 'B', name: 'Treino B — Costas, Bíceps & Abdômen', weekdays: [2, 5], exIds: ['puxada_frontal','remada_curvada','remada_baixa','rosca_direta','rosca_martelo','abdominal_supra'] },
+        { letter: 'C', name: 'Treino C — Pernas Completo', weekdays: [3, 6], exIds: ['agachamento_livre','leg_press','cadeira_extensora','stiff_barra','panturrilha_pe'] }
+      ]},
+      { id: 'ABCD', label: 'ABCD', sub: '4 Treinos', days: [
+        { letter: 'A', name: 'Treino A — Peito & Tríceps', weekdays: [1], exIds: ['supino_reto','supino_inclinado','crucifixo_banco','triceps_corda','triceps_testa'] },
+        { letter: 'B', name: 'Treino B — Costas & Bíceps', weekdays: [2], exIds: ['puxada_frontal','remada_curvada','remada_baixa','rosca_direta','rosca_martelo'] },
+        { letter: 'C', name: 'Treino C — Pernas & Glúteos', weekdays: [4], exIds: ['agachamento_livre','leg_press','cadeira_extensora','stiff_barra','panturrilha_pe'] },
+        { letter: 'D', name: 'Treino D — Ombros & Abdômen', weekdays: [5], exIds: ['desenvolvimento_halter','elevacao_lateral','abdominal_supra','prancha_core'] }
+      ]},
+      { id: 'ABCDE', label: 'ABCDE', sub: '5 Treinos', days: [
+        { letter: 'A', name: 'Treino A — Peito Intenso', weekdays: [1], exIds: ['supino_reto','supino_inclinado','crucifixo_banco'] },
+        { letter: 'B', name: 'Treino B — Costas Completo', weekdays: [2], exIds: ['puxada_frontal','remada_curvada','remada_baixa'] },
+        { letter: 'C', name: 'Treino C — Pernas & Glúteos', weekdays: [3], exIds: ['agachamento_livre','leg_press','cadeira_extensora','stiff_barra','panturrilha_pe'] },
+        { letter: 'D', name: 'Treino D — Ombros & Core', weekdays: [4], exIds: ['desenvolvimento_halter','elevacao_lateral','abdominal_supra','prancha_core'] },
+        { letter: 'E', name: 'Treino E — Braços (Bíceps & Tríceps)', weekdays: [5], exIds: ['rosca_direta','rosca_martelo','triceps_corda','triceps_testa'] }
+      ]},
+      { id: 'FULLBODY', label: 'Full Body', sub: 'Corpo Todo', days: [
+        { letter: 'A', name: 'Treino A — Full Body Principal', weekdays: [1, 3, 5], exIds: ['agachamento_livre','supino_reto','puxada_frontal','desenvolvimento_halter','rosca_direta','prancha_core'] }
+      ]},
+      { id: 'UPPERLOWER', label: 'Upper/Lower', sub: 'Sup & Inf', days: [
+        { letter: 'A', name: 'Treino A — Upper (Superiores)', weekdays: [1, 4], exIds: ['supino_reto','remada_curvada','desenvolvimento_halter','puxada_frontal','rosca_direta','triceps_testa'] },
+        { letter: 'B', name: 'Treino B — Lower (Inferiores)', weekdays: [2, 5], exIds: ['agachamento_livre','stiff_barra','leg_press','panturrilha_pe','abdominal_supra'] }
+      ]}
+    ];
+
+    const GOAL_PRESETS = [
+      { id: 'Hipertrofia', icon: '💪', reps: '8-12', rest: 75, sets: 4, cardio: 'esteira' },
+      { id: 'Emagrecimento', icon: '🔥', reps: '12-15', rest: 45, sets: 3, cardio: 'hiit' },
+      { id: 'Força Pura', icon: '🏋️', reps: '4-6', rest: 120, sets: 5, cardio: 'bike' },
+      { id: 'Condicionamento/TAF', icon: '⚡', reps: '12-16', rest: 45, sets: 3, cardio: 'corrida_livre' },
+      { id: 'Resistência', icon: '🏃', reps: '15-20', rest: 40, sets: 3, cardio: 'escada' }
+    ];
+
+    const FACILITATED_TIPS = {
+      'Hipertrofia': [
+        'Controle a descida (fase excêntrica) por 2 a 3 segundos em cada repetição. Mais tempo sob tensão gera hipertrofia muito superior a apenas balançar cargas altas!',
+        'Quando conseguir bater o teto de repetições (ex.: 12 reps) em todas as séries com postura perfeita, aumente de 2kg a 5kg na próxima sessão.',
+        'Mantenha o descanso entre 60s e 90s nos exercícios principais para recuperar energia e manter alta intensidade.'
+      ],
+      'Execução': [
+        'Respire do jeito certo: inspire antes de descer o peso e solte o ar com força na hora de empurrar ou puxar (fase concêntrica).',
+        'No Supino e na Remada, feche as escápulas ("esmague uma moeda entre as costas") para ativar muito mais o músculo alvo e proteger os ombros.',
+        'Nunca trave os joelhos no topo do Leg Press ou Agachamento: mantenha tensão muscular contínua durante toda a série.'
+      ],
+      'Cardio': [
+        'Fazer o Cardio Final Obrigatório após a musculação garante força máxima nos pesos primeiro e acelera a queima de gordura no final.',
+        'Na Esteira inclinada (8% a 12%), caminhe em ritmo firme sem segurar nos apoios laterais — isso dobra o gasto calórico e poupa os joelhos.',
+        'No Simulador de Escada, apoie o pé inteiro no degrau para acionar glúteos e posteriores sem sobrecarregar a panturrilha.'
+      ],
+      'Recuperação': [
+        'Músculo cresce no descanso! Durma de 7h a 8h por noite e mantenha sua meta diária de água batida no Dashboard.',
+        'Sentiu dor articular aguda? Pare a série, reduza a carga ou clique em "🔄 Trocar" no card para escolher uma variação mais confortável.'
+      ],
+      'Condicionamento/TAF': [
+        'Para corrida de 2.400m (TAF), treine ritmo constante (pace uniforme) nos treinos de cardio e finalize os últimos 400m em progressão.',
+        'Combine musculação de pernas e core com intervalos curtos de descanso (45s) para elevar sua resistência cardiovascular e muscular.'
+      ]
+    };
+
+    // =========================================================================
+    // 3. ESTADO GLOBAL + PERSISTÊNCIA LOCALSTORAGE
+    // =========================================================================
+    const STORE_KEY = 'id_esportivo_pro_v3';
+
+    let state = {
+      profile: { name: 'Atleta', weight: 75, height: 175, age: 25, goal: 'Hipertrofia' },
+      goals: { weeklyWorkouts: 4, dailyWaterMl: 2625, weeklyCardioMin: 100 },
+      weekCheckins: [false, true, false, true, false, false, false], // Dom..Sab
+      weeklyCardioDoneMin: 40,
+      theme: { id: 'neon_volt', customPrimary: null, customAccent: null, baseMode: 'dark' },
+      soundEnabled: true,
+      geminiPrefs: { focus: 'Hipertrofia limpa e condicionamento físico', style: 'direto' },
+      plan: { splitId: 'ABC', goalText: 'Hipertrofia', level: 'intermediario', cardioPref: 'auto', days: [] },
+      customExercises: [],
+      editedBaseExercises: {},
+      water: { date: todayISO(), ml: 0 },
+      measurements: [],
+      prs: {},
+      history: [],
+      stats: { totalWorkouts: 0, totalVolume: 0, xp: 0, streak: 0, lastDate: null },
+      tipCat: 'Hipertrofia',
+      tipIdx: 0
+    };
+
+    // Estado de UI
+    let heroDayIdx = 0;
+    let selectedGenSplit = 'ABC';
+    let selectedGenGoal = 'Hipertrofia';
+    let editorDayIdx = 0;
+    let activeDayIdx = 0;
+    let activeExIdx = 0;
+    let activeSessionSeconds = 0;
+    let activeClockInterval = null;
+    let cardioTimerSec = 1200;
+    let cardioTimerInterval = null;
+    let cardioTimerRunning = false;
+
+    let restTotal = 60, restLeft = 60, restInterval = null, restRunning = false;
+    let guidePaused = false, guideSlow = false;
+    let modalLibMode = 'add', modalSwapIdx = -1, modalLibMuscle = 'Todos', catalogMuscle = 'Todos';
+    let lastDeletedEx = null;
+
+    function todayISO() { return new Date().toISOString().slice(0, 10); }
+
+    function getAllExercises() {
+      const mergedBase = BASE_EXERCISES.map(ex => ({
+        ...ex,
+        ...(state.editedBaseExercises?.[ex.id] || {})
+      }));
+      return [...mergedBase, ...(state.customExercises || [])];
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) {
+          const p = JSON.parse(raw);
+          state = {
+            ...state, ...p,
+            profile: { ...state.profile, ...(p.profile || {}) },
+            goals: { ...state.goals, ...(p.goals || {}) },
+            theme: { ...state.theme, ...(p.theme || {}) },
+            geminiPrefs: { ...state.geminiPrefs, ...(p.geminiPrefs || {}) },
+            stats: { ...state.stats, ...(p.stats || {}) }
+          };
+        }
+        if (state.water.date !== todayISO()) state.water = { date: todayISO(), ml: 0 };
+      } catch (e) { console.warn('Erro ao carregar dados:', e); }
+    }
+
+    function saveState() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+      catch (e) { console.warn('Erro ao salvar dados:', e); }
+    }
+
+    // =========================================================================
+    // 4. ANIMAÇÕES ANATÔMICAS DE ATLETA EM SVG/CSS (ESTILO GIF HD)
+    // =========================================================================
+    function renderAthleteAnimation(animType, sizeClass = 'w-28 h-24', showPhase = false, stageId = '') {
+      const defs = `
+        <defs>
+          <linearGradient id="metalG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/>
+          </linearGradient>
+          <linearGradient id="plateG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#334155"/><stop offset="100%" stop-color="#0f172a"/>
+          </linearGradient>
+        </defs>`;
+      let scene = '';
+
+      switch (animType) {
+        case 'bench':
+          scene = `
+            <rect x="24" y="102" width="128" height="12" rx="5" fill="#334155"/>
+            <rect x="28" y="99" width="120" height="7" rx="3.5" fill="#1e293b"/>
+            <rect x="42" y="114" width="8" height="32" rx="3" fill="url(#metalG)"/>
+            <rect x="128" y="114" width="8" height="32" rx="3" fill="url(#metalG)"/>
+            <line x1="16" y1="146" x2="164" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <circle cx="44" cy="87" r="11" fill="var(--skin)"/>
+            <path d="M33 86 Q34 74 47 76 Q51 77 52 81 Q43 80 37 88 Z" fill="var(--hair)"/>
+            <rect x="52" y="84" width="8" height="9" rx="3" fill="var(--skin-shadow)"/>
+            <path d="M58 81 L108 83 L106 99 L58 99 Z" fill="var(--shirt)"/>
+            <ellipse cx="75" cy="88" rx="13" ry="7" class="muscle-glow"/>
+            <path d="M104 83 L132 86 L130 99 L104 99 Z" fill="var(--shorts)"/>
+            <path d="M128 90 L146 112 L144 138" fill="none" stroke="var(--skin)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="139" y="135" width="19" height="9" rx="4" fill="var(--primary)"/>
+            <g class="kf-bench-bar">
+              <path d="M74 87 L76 52" stroke="var(--skin)" stroke-width="9.5" stroke-linecap="round"/>
+              <circle cx="76" cy="50" r="5" fill="var(--skin)"/>
+              <rect x="44" y="47" width="66" height="5" rx="2.5" fill="url(#metalG)"/>
+              <rect x="46" y="34" width="9" height="31" rx="3" fill="url(#plateG)" stroke="var(--accent)" stroke-width="1.5"/>
+              <rect x="99" y="34" width="9" height="31" rx="3" fill="url(#plateG)" stroke="var(--accent)" stroke-width="1.5"/>
+            </g>
+            <path d="M132 52 L132 30 M127 36 L132 29 L137 36" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" class="arrow-float"/>`;
+          break;
+        case 'row':
+          scene = `
+            <rect x="138" y="18" width="22" height="128" rx="4" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+            <g class="kf-row-weights">
+              <rect x="142" y="88" width="14" height="32" rx="2" fill="var(--accent)" opacity="0.85"/>
+              <line x1="142" y1="96" x2="156" y2="96" stroke="#0f172a" stroke-width="2"/>
+              <line x1="142" y1="104" x2="156" y2="104" stroke="#0f172a" stroke-width="2"/>
+            </g>
+            <rect x="24" y="106" width="84" height="10" rx="4" fill="#334155"/>
+            <rect x="36" y="116" width="8" height="30" rx="3" fill="url(#metalG)"/>
+            <rect x="88" y="116" width="8" height="30" rx="3" fill="url(#metalG)"/>
+            <line x1="14" y1="146" x2="166" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <path d="M56 102 L96 106 L118 124" fill="none" stroke="var(--shorts)" stroke-width="14" stroke-linecap="round"/>
+            <path d="M98 108 L122 124" fill="none" stroke="var(--skin)" stroke-width="10" stroke-linecap="round"/>
+            <rect x="116" y="118" width="16" height="9" rx="4" fill="var(--primary)" transform="rotate(-35 124 122)"/>
+            <g class="kf-row-torso">
+              <circle cx="54" cy="44" r="11" fill="var(--skin)"/>
+              <path d="M43 42 Q44 31 58 33 Q65 35 64 41 Q55 37 45 45 Z" fill="var(--hair)"/>
+              <path d="M43 56 L66 56 L64 104 L45 104 Z" fill="var(--shirt)"/>
+              <ellipse cx="48" cy="74" rx="8" ry="15" class="muscle-glow"/>
+            </g>
+            <g class="kf-row-pull">
+              <line x1="104" y1="74" x2="138" y2="74" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="5 3"/>
+              <path d="M58 64 L82 78 L104 74" fill="none" stroke="var(--skin)" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="102" y="66" width="6" height="16" rx="3" fill="var(--primary)"/>
+            </g>`;
+          break;
+        case 'squat':
+          scene = `
+            <line x1="34" y1="22" x2="34" y2="146" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+            <line x1="22" y1="146" x2="158" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <g class="kf-squat-shin">
+              <path d="M92 108 L86 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+              <rect x="78" y="136" width="24" height="9" rx="4" fill="var(--primary)"/>
+            </g>
+            <g class="kf-squat-thigh">
+              <path d="M80 86 L92 110" stroke="var(--shorts)" stroke-width="15" stroke-linecap="round"/>
+              <ellipse cx="86" cy="98" rx="8" ry="12" class="muscle-glow"/>
+            </g>
+            <g class="kf-squat-upper">
+              <path d="M74 44 L94 46 L90 88 L72 86 Z" fill="var(--shirt)"/>
+              <circle cx="86" cy="30" r="10.5" fill="var(--skin)"/>
+              <path d="M75 28 Q78 17 91 20 Q97 22 96 28 Q86 24 77 31 Z" fill="var(--hair)"/>
+              <path d="M84 48 L96 42" stroke="var(--skin)" stroke-width="8.5" stroke-linecap="round"/>
+              <rect x="64" y="40" width="38" height="4.5" rx="2" fill="url(#metalG)"/>
+              <circle cx="76" cy="42" r="13" fill="url(#plateG)" stroke="var(--accent)" stroke-width="2.5"/>
+              <circle cx="76" cy="42" r="4" fill="#94a3b8"/>
+            </g>`;
+          break;
+        case 'shoulder':
+          scene = `
+            <line x1="20" y1="146" x2="160" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <path d="M82 96 L78 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M98 96 L102 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <rect x="70" y="136" width="16" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="94" y="136" width="16" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="74" y="88" width="32" height="22" rx="6" fill="var(--shorts)"/>
+            <path d="M70 50 L110 50 L104 92 L76 92 Z" fill="var(--shirt)"/>
+            <circle cx="90" cy="34" r="11" fill="var(--skin)"/>
+            <path d="M79 32 Q81 20 90 21 Q100 20 101 32 Q95 26 85 26 Z" fill="var(--hair)"/>
+            <circle cx="72" cy="56" r="8" class="muscle-glow"/>
+            <circle cx="108" cy="56" r="8" class="muscle-glow"/>
+            <g class="kf-sh-l">
+              <path d="M72 58 L54 88" stroke="var(--skin)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="44" y="84" width="18" height="7" rx="3" fill="var(--accent)" transform="rotate(-30 53 88)"/>
+            </g>
+            <g class="kf-sh-r">
+              <path d="M108 58 L126 88" stroke="var(--skin)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="118" y="84" width="18" height="7" rx="3" fill="var(--accent)" transform="rotate(30 127 88)"/>
+            </g>`;
+          break;
+        case 'curl':
+          scene = `
+            <line x1="20" y1="146" x2="160" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <path d="M84 96 L80 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M96 96 L100 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <rect x="74" y="136" width="18" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="92" y="136" width="18" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="77" y="88" width="26" height="22" rx="6" fill="var(--shorts)"/>
+            <path d="M77 50 L102 50 L99 92 L79 92 Z" fill="var(--shirt)"/>
+            <circle cx="90" cy="34" r="11" fill="var(--skin)"/>
+            <path d="M79 33 Q80 21 94 22 Q100 24 100 30 Q91 27 82 35 Z" fill="var(--hair)"/>
+            <path d="M88 56 L88 78" stroke="var(--skin)" stroke-width="10" stroke-linecap="round"/>
+            <ellipse cx="92" cy="67" rx="6.5" ry="9" class="muscle-glow"/>
+            <g class="kf-curl-forearm">
+              <path d="M88 78 L118 78" stroke="var(--skin)" stroke-width="8.5" stroke-linecap="round"/>
+              <circle cx="122" cy="78" r="8.5" fill="url(#plateG)" stroke="var(--accent)" stroke-width="2"/>
+              <circle cx="122" cy="78" r="3" fill="var(--primary)"/>
+            </g>`;
+          break;
+        case 'triceps':
+          scene = `
+            <rect x="134" y="16" width="22" height="130" rx="4" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+            <line x1="112" y1="22" x2="140" y2="22" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+            <g class="kf-tri-weights"><rect x="138" y="86" width="14" height="30" rx="2" fill="var(--accent)" opacity="0.85"/></g>
+            <line x1="18" y1="146" x2="164" y2="146" stroke="var(--border-color)" stroke-width="3"/>
+            <path d="M68 96 L64 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M80 96 L86 138" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+            <rect x="58" y="136" width="18" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="78" y="136" width="18" height="9" rx="4" fill="var(--primary)"/>
+            <rect x="63" y="88" width="25" height="22" rx="6" fill="var(--shorts)"/>
+            <path d="M64 50 L88 52 L84 92 L65 92 Z" fill="var(--shirt)"/>
+            <circle cx="77" cy="34" r="10.5" fill="var(--skin)"/>
+            <path d="M66 32 Q68 21 81 22 Q88 24 87 30 Q78 27 69 34 Z" fill="var(--hair)"/>
+            <path d="M75 56 L78 74" stroke="var(--skin)" stroke-width="9.5" stroke-linecap="round"/>
+            <ellipse cx="72" cy="65" rx="6" ry="9" class="muscle-glow"/>
+            <g class="kf-tri-forearm">
+              <path d="M78 74 L112 74" stroke="var(--skin)" stroke-width="8.5" stroke-linecap="round"/>
+              <line x1="112" y1="22" x2="112" y2="74" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="4 3"/>
+              <circle cx="112" cy="74" r="5.5" fill="var(--primary)"/>
+            </g>`;
+          break;
+        case 'abs':
+          scene = `
+            <rect x="18" y="120" width="144" height="10" rx="5" fill="#334155"/>
+            <rect x="22" y="118" width="136" height="6" rx="3" fill="var(--accent)" opacity="0.5"/>
+            <path d="M98 112 L122 82 L142 115" fill="none" stroke="var(--skin)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M96 112 L116 88" stroke="var(--shorts)" stroke-width="14" stroke-linecap="round"/>
+            <rect x="136" y="111" width="18" height="8" rx="4" fill="var(--primary)"/>
+            <ellipse cx="86" cy="108" rx="12" ry="7" class="muscle-glow"/>
+            <g class="kf-abs-torso">
+              <path d="M96 112 L52 106" stroke="var(--shirt)" stroke-width="18" stroke-linecap="round"/>
+              <circle cx="38" cy="102" r="11" fill="var(--skin)"/>
+              <path d="M27 104 Q27 90 40 91 Q46 92 47 97 Q38 96 31 105 Z" fill="var(--hair)"/>
+              <path d="M62 103 L48 90" stroke="var(--skin)" stroke-width="7.5" stroke-linecap="round"/>
+            </g>`;
+          break;
+        case 'cardio_run':
+          scene = `
+            <path d="M26 130 L146 122" stroke="#1e293b" stroke-width="14" stroke-linecap="round"/>
+            <line x1="30" y1="126" x2="142" y2="119" stroke="var(--primary)" stroke-width="4" stroke-linecap="round" class="kf-belt"/>
+            <path d="M132 122 L144 52 L126 48" fill="none" stroke="#475569" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="120" y="40" width="26" height="12" rx="4" fill="var(--accent)"/>
+            <g class="kf-run-body">
+              <g class="kf-run-armB"><path d="M84 56 L68 74" stroke="var(--skin-shadow)" stroke-width="8" stroke-linecap="round"/></g>
+              <g class="kf-run-legB">
+                <path d="M82 84 L82 118" stroke="var(--skin-shadow)" stroke-width="10" stroke-linecap="round"/>
+                <rect x="78" y="114" width="16" height="7" rx="3.5" fill="var(--accent)"/>
+              </g>
+              <path d="M74 52 L94 54 L90 86 L74 84 Z" fill="var(--shirt)"/>
+              <ellipse cx="83" cy="70" rx="7" ry="10" class="muscle-glow"/>
+              <circle cx="88" cy="35" r="10.5" fill="var(--skin)"/>
+              <path d="M77 33 Q80 22 93 24 Q99 26 98 32 Q89 28 80 36 Z" fill="var(--hair)"/>
+              <g class="kf-run-legA">
+                <path d="M82 84 L86 118" stroke="var(--skin)" stroke-width="10.5" stroke-linecap="round"/>
+                <rect x="82" y="114" width="17" height="8" rx="4" fill="var(--primary)"/>
+              </g>
+              <g class="kf-run-armA"><path d="M84 56 L102 72" stroke="var(--skin)" stroke-width="8.5" stroke-linecap="round"/></g>
+            </g>`;
+          break;
+        case 'cardio_bike':
+          scene = `
+            <line x1="22" y1="142" x2="156" y2="142" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+            <g class="kf-spin-wheel">
+              <circle cx="124" cy="112" r="22" fill="none" stroke="var(--primary)" stroke-width="5"/>
+              <line x1="124" y1="90" x2="124" y2="134" stroke="var(--accent)" stroke-width="2.5"/>
+              <line x1="102" y1="112" x2="146" y2="112" stroke="var(--accent)" stroke-width="2.5"/>
+            </g>
+            <path d="M56 96 L84 112 L124 112 L114 66 L130 62" fill="none" stroke="#475569" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="48" y="88" width="22" height="7" rx="3.5" fill="#1e293b"/>
+            <g class="kf-bike-legB"><path d="M72 82 L90 112" stroke="var(--skin-shadow)" stroke-width="10" stroke-linecap="round"/></g>
+            <path d="M64 84 L88 54 L100 62 L78 90 Z" fill="var(--shirt)"/>
+            <circle cx="96" cy="40" r="10.5" fill="var(--skin)"/>
+            <path d="M85 38 Q88 27 101 29 Q107 31 106 37 Q97 33 88 41 Z" fill="var(--hair)"/>
+            <path d="M90 58 L124 64" stroke="var(--skin)" stroke-width="8.5" stroke-linecap="round"/>
+            <g class="kf-bike-legA">
+              <path d="M72 82 L84 114" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+              <ellipse cx="78" cy="96" rx="7" ry="10" class="muscle-glow"/>
+              <rect x="76" y="112" width="18" height="8" rx="4" fill="var(--primary)"/>
+            </g>
+            <g class="kf-spin-crank"><circle cx="84" cy="112" r="5" fill="var(--accent)"/></g>`;
+          break;
+        default:
+          scene = `
+            <path d="M36 142 L134 142 L134 72 L110 72 L110 92 L86 92 L86 112 L62 112 L62 132 L36 132 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+            <g class="kf-stairs-step">
+              <line x1="62" y1="112" x2="86" y2="112" stroke="var(--primary)" stroke-width="4"/>
+              <line x1="86" y1="92" x2="110" y2="92" stroke="var(--primary)" stroke-width="4"/>
+              <line x1="110" y1="72" x2="134" y2="72" stroke="var(--primary)" stroke-width="4"/>
+            </g>
+            <path d="M124 72 L124 38 L108 42" fill="none" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+            <g class="kf-stairs-body">
+              <g class="kf-stairs-legB">
+                <path d="M76 78 L88 108" stroke="var(--skin-shadow)" stroke-width="10" stroke-linecap="round"/>
+                <rect x="82" y="106" width="17" height="7" rx="3.5" fill="var(--accent)"/>
+              </g>
+              <path d="M68 46 L88 48 L84 82 L68 80 Z" fill="var(--shirt)"/>
+              <circle cx="80" cy="30" r="10.5" fill="var(--skin)"/>
+              <path d="M69 28 Q72 17 85 19 Q91 21 90 27 Q81 23 72 31 Z" fill="var(--hair)"/>
+              <path d="M84 54 L112 44" stroke="var(--skin)" stroke-width="8" stroke-linecap="round"/>
+              <g class="kf-stairs-legA">
+                <path d="M76 78 L72 110" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+                <ellipse cx="74" cy="92" rx="7" ry="10" class="muscle-glow"/>
+                <rect x="66" y="108" width="18" height="8" rx="4" fill="var(--primary)"/>
+              </g>
+            </g>`;
+          break;
+      }
+
+      const phaseBadge = showPhase ? `
+        <div class="phase-pill">
+          <div class="phase-track">
+            <span>⚡ Concêntrica</span>
+            <span>🔄 Excêntrica</span>
+          </div>
+        </div>` : '';
+
+      return `
+        <div ${stageId ? `id="${stageId}"` : ''} class="athlete-stage ${sizeClass} rounded-2xl flex items-center justify-center shrink-0">
+          <span class="gif-pill">GIF HD</span>
+          ${phaseBadge}
+          <svg viewBox="0 0 180 160" class="w-full h-full">${defs}${scene}</svg>
+        </div>`;
+    }
+
+    // =========================================================================
+    // 5. GERADOR INTELIGENTE DE PLANILHAS
+    // =========================================================================
+    function createExerciseEntry(dbEx, setsCount, repsText, restSec) {
+      return {
+        uid: 'ex_' + Math.random().toString(36).slice(2, 9),
+        id: dbEx.id,
+        name: dbEx.name,
+        muscle: dbEx.muscle,
+        anim: dbEx.anim,
+        cue: dbEx.cue,
+        mistakes: dbEx.mistakes,
+        rest: restSec,
+        sets: Array.from({ length: setsCount }, () => ({
+          weight: dbEx.defaultWeight || 0,
+          reps: repsText,
+          done: false
+        }))
+      };
+    }
+
+    function inferParamsFromGoal(goalText, level, cardioPref) {
+      const g = (goalText || 'Hipertrofia').toLowerCase();
+      let sets = 4, reps = '8-12', rest = 75, cardioId = 'esteira';
+      if (g.includes('força') || g.includes('forca') || g.includes('pura')) { sets = 5; reps = '4-6'; rest = 120; cardioId = 'bike'; }
+      else if (g.includes('emagrec') || g.includes('secar')) { sets = 3; reps = '12-15'; rest = 45; cardioId = 'hiit'; }
+      else if (g.includes('taf') || g.includes('condicionamento') || g.includes('futebol')) { sets = 3; reps = '12-16'; rest = 45; cardioId = 'corrida_livre'; }
+      else if (g.includes('resist')) { sets = 3; reps = '15-20'; rest = 40; cardioId = 'escada'; }
+
+      if (level === 'iniciante') sets = Math.max(2, sets - 1);
+      if (level === 'avancado') sets = Math.min(5, sets + 1);
+      if (cardioPref && cardioPref !== 'auto') cardioId = cardioPref;
+      return { sets, reps, rest, cardioId };
+    }
+
+    function buildWorkoutPlan(splitId, goalText, level, cardioPref) {
+      const split = SPLIT_CONFIGS.find(s => s.id === splitId) || SPLIT_CONFIGS[1];
+      const params = inferParamsFromGoal(goalText, level, cardioPref);
+      const allEx = getAllExercises();
+      const cardioBase = CARDIO_OPTIONS.find(c => c.id === params.cardioId) || CARDIO_OPTIONS[0];
+
+      const days = split.days.map(d => ({
+        letter: d.letter,
+        name: d.name,
+        weekdays: [...d.weekdays],
+        exercises: d.exIds
+          .map(id => allEx.find(e => e.id === id))
+          .filter(Boolean)
+          .map(dbEx => createExerciseEntry(dbEx, params.sets, params.reps, params.rest)),
+        cardio: { ...cardioBase, done: false }
+      }));
+
+      state.plan = { splitId: split.id, goalText, level, cardioPref, days };
+      heroDayIdx = 0; editorDayIdx = 0; activeDayIdx = 0; activeExIdx = 0;
+      saveState();
+    }
+
+    function runSmartGenerator() {
+      const customTxt = document.getElementById('custom-goal-input').value.trim();
+      const finalGoal = customTxt || selectedGenGoal || 'Hipertrofia';
+      const level = document.getElementById('gen-level').value;
+      const cardioPref = document.getElementById('gen-cardio').value;
+
+      buildWorkoutPlan(selectedGenSplit, finalGoal, level, cardioPref);
+      renderAllViews();
+      showToast(`🚀 Divisão ${selectedGenSplit} criada para "${finalGoal}" com Cardio Final Obrigatório!`);
+    }
+
+    // =========================================================================
+    // 6. ABA 1: DASHBOARD CAPRICHADO + EDITAR/AJUSTAR
+    // =========================================================================
+    function renderDashboard() {
+      const hr = new Date().getHours();
+      const greet = hr < 12 ? 'Bom dia' : hr < 18 ? 'Boa tarde' : 'Boa noite';
+      document.getElementById('dash-greeting').textContent = `${greet}, ${state.profile.name || 'Atleta'}! • ${state.profile.goal}`;
+
+      const lvl = Math.floor((state.stats.xp || 0) / 300) + 1;
+      document.getElementById('hdr-streak').textContent = state.stats.streak || 0;
+      document.getElementById('hdr-level').textContent = lvl;
+
+      // Dica Facilitada
+      const cats = Object.keys(FACILITATED_TIPS);
+      document.getElementById('dash-tip-categories').innerHTML = cats.map(c => `
+        <button onclick="state.tipCat='${c}'; state.tipIdx=0; saveState(); renderDashboard();"
+                class="px-3 py-1 rounded-full text-[11px] font-extrabold shrink-0 border transition ${state.tipCat === c ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted hover:text-main'}">
+          ${c}
+        </button>`).join('');
+      const arrTips = FACILITATED_TIPS[state.tipCat] || FACILITATED_TIPS['Hipertrofia'];
+      document.getElementById('dash-daily-tip').textContent = arrTips[state.tipIdx % arrTips.length];
+
+      // Card Hero Treino do Dia
+      if (heroDayIdx >= state.plan.days.length) heroDayIdx = 0;
+      const day = state.plan.days[heroDayIdx] || state.plan.days[0];
+      if (day) {
+        document.getElementById('dash-split-tag').textContent = `Divisão ${state.plan.splitId} • ${state.plan.goalText}`;
+        document.getElementById('dash-letter-pills').innerHTML = state.plan.days.map((d, idx) => `
+          <button onclick="heroDayIdx=${idx}; renderDashboard();"
+                  class="w-8 h-8 rounded-xl font-extrabold text-xs border transition ${idx === heroDayIdx ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted hover:text-main'}">
+            ${d.letter}
+          </button>`).join('');
+
+        const muscles = [...new Set(day.exercises.map(e => e.muscle))].join(', ') || 'Geral';
+        const estMin = day.exercises.length * 6 + (Number(day.cardio.minutes) || 20);
+        document.getElementById('dash-hero-title').textContent = day.name;
+        document.getElementById('dash-hero-muscles').textContent = `Grupos: ${muscles} • ~${estMin} min totais`;
+        document.getElementById('dash-hero-cardio').textContent = `${day.cardio.name} • ${day.cardio.intensity}`;
+        document.getElementById('dash-hero-cardio-time').textContent = `${day.cardio.minutes} min`;
+      }
+
+      // Check-in Semanal Interativo (Seg a Dom)
+      const order = [1, 2, 3, 4, 5, 6, 0];
+      const names = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      const doneWeek = state.weekCheckins.filter(Boolean).length;
+      const goalWeek = state.goals.weeklyWorkouts || 4;
+      document.getElementById('dash-week-ratio').textContent = `${doneWeek}/${goalWeek} dias`;
+
+      document.getElementById('dash-checkin-grid').innerHTML = order.map(dow => {
+        const checked = state.weekCheckins[dow];
+        return `
+          <button onclick="toggleWeekCheckin(${dow})"
+                  class="rounded-2xl py-2.5 px-1 text-center border transition ${checked ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted hover:text-main'}">
+            <div class="text-[10px] font-bold uppercase">${names[dow]}</div>
+            <div class="text-sm font-extrabold mt-1">${checked ? '✓' : '·'}</div>
+          </button>`;
+      }).join('');
+
+      // Mini Gráfico SVG de Volume
+      const hist = state.history.slice(0, 6).reverse();
+      const chartEl = document.getElementById('dash-mini-chart');
+      if (!hist.length) {
+        chartEl.innerHTML = `<div class="h-full flex items-center justify-center text-[11px] text-muted">Conclua treinos para visualizar o gráfico 📊</div>`;
+      } else {
+        const maxV = Math.max(...hist.map(h => h.volume || 100), 100);
+        chartEl.innerHTML = `
+          <div class="h-full flex items-end gap-2 pt-2">
+            ${hist.map(h => {
+              const pct = Math.max(15, Math.round(((h.volume || 0) / maxV) * 100));
+              return `
+                <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div class="w-full rounded-t-lg transition-all" style="height:${pct}%; background:var(--primary);"></div>
+                  <span class="text-[9px] font-mono-num text-muted">${h.date.slice(0,5)}</span>
+                </div>`;
+            }).join('')}
+          </div>`;
+      }
+
+      // Métricas inferiores
+      document.getElementById('dash-total-vol').textContent = (state.stats.totalVolume || 0).toLocaleString('pt-BR');
+      document.getElementById('dash-workouts-count').textContent = state.stats.totalWorkouts || 0;
+      document.getElementById('dash-streak-txt').textContent = `${state.stats.streak || 0} dias`;
+
+      const cCur = state.weeklyCardioDoneMin || 0;
+      const cGoal = state.goals.weeklyCardioMin || 100;
+      document.getElementById('dash-cardio-cur').textContent = cCur;
+      document.getElementById('dash-cardio-goal').textContent = cGoal;
+      document.getElementById('dash-cardio-bar').style.width = Math.min(100, Math.round((cCur / cGoal) * 100)) + '%';
+
+      renderWaterUI();
+      populateDashboardEditInputs();
+    }
+
+    function populateDashboardEditInputs() {
+      document.getElementById('ed-dash-name').value = state.profile.name || 'Atleta';
+      document.getElementById('ed-dash-goal').value = state.profile.goal || 'Hipertrofia';
+      document.getElementById('ed-dash-wgoal').value = state.goals.weeklyWorkouts || 4;
+      document.getElementById('ed-dash-water').value = state.goals.dailyWaterMl || 2625;
+      document.getElementById('ed-dash-cardio').value = state.goals.weeklyCardioMin || 100;
+    }
+
+    function saveDashboardEdits() {
+      state.profile.name = document.getElementById('ed-dash-name').value.trim() || 'Atleta';
+      state.profile.goal = document.getElementById('ed-dash-goal').value.trim() || 'Hipertrofia';
+      state.goals.weeklyWorkouts = Math.max(1, Math.min(7, Number(document.getElementById('ed-dash-wgoal').value) || 4));
+      state.goals.dailyWaterMl = Math.max(500, Number(document.getElementById('ed-dash-water').value) || 2625);
+      state.goals.weeklyCardioMin = Math.max(10, Number(document.getElementById('ed-dash-cardio').value) || 100);
+      saveState();
+      toggleEditPanel('dash-edit-panel');
+      renderDashboard();
+      showToast('✅ Dashboard atualizado com sucesso!');
+    }
+
+    function toggleWeekCheckin(dow) {
+      state.weekCheckins[dow] = !state.weekCheckins[dow];
+      saveState(); renderDashboard();
+      if (state.weekCheckins[dow]) showToast('✅ Dia marcado como treinado!');
+    }
+
+    function addWeeklyCardioMinutes(min) {
+      state.weeklyCardioDoneMin = (state.weeklyCardioDoneMin || 0) + min;
+      saveState(); renderDashboard();
+      showToast(`🫀 +${min} min de cardio adicionados à semana!`);
+    }
+
+    function nextFacilitatedTip(notify = false) {
+      state.tipIdx = (state.tipIdx || 0) + 1;
+      saveState(); renderDashboard();
+      if (notify) showToast('💡 Nova dica facilitada carregada!');
+    }
+
+    function startSelectedHeroWorkout() {
+      activeDayIdx = heroDayIdx;
+      activeExIdx = 0;
+      switchTab('active');
+    }
+
+    // =========================================================================
+    // 7. ABA 2: MONTAR TREINO (COM TEMPO DE DESCANSO + DICA DIRETA NO CARD)
+    // =========================================================================
+    function toggleBuilderGenerator() {
+      document.getElementById('builder-generator-box').classList.toggle('hidden');
+    }
+
+    function renderBuilder() {
+      document.getElementById('split-selector-grid').innerHTML = SPLIT_CONFIGS.map(sp => {
+        const active = selectedGenSplit === sp.id;
+        return `
+          <button onclick="selectedGenSplit='${sp.id}'; renderBuilder();"
+                  class="p-3 rounded-2xl border-2 text-left transition ${active ? 'glass-elevated' : 'bg-input border-theme hover:brightness-110'}"
+                  style="${active ? 'border-color: var(--primary);' : ''}">
+            <div class="font-extrabold text-sm ${active ? 'text-primary' : 'text-main'}">${sp.label}</div>
+            <div class="text-[11px] text-muted">${sp.sub}</div>
+          </button>`;
+      }).join('');
+
+      document.getElementById('goal-presets-grid').innerHTML = GOAL_PRESETS.map(g => {
+        const active = selectedGenGoal === g.id;
+        return `
+          <button onclick="selectedGenGoal='${g.id}'; document.getElementById('custom-goal-input').value=''; renderBuilder();"
+                  class="p-2.5 rounded-2xl border-2 text-left transition ${active ? 'glass-elevated' : 'bg-input border-theme'}"
+                  style="${active ? 'border-color: var(--primary);' : ''}">
+            <div class="text-base">${g.icon}</div>
+            <div class="font-bold text-xs mt-0.5">${g.id}</div>
+            <div class="text-[10px] font-mono-num text-muted">${g.reps} • ⏱️${g.rest}s</div>
+          </button>`;
+      }).join('');
+
+      if (!state.plan.days.length) return;
+      if (editorDayIdx >= state.plan.days.length) editorDayIdx = 0;
+      const day = state.plan.days[editorDayIdx];
+
+      document.getElementById('day-letter-tabs').innerHTML = state.plan.days.map((d, idx) => `
+        <button onclick="editorDayIdx=${idx}; renderBuilder();"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border transition ${idx === editorDayIdx ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted hover:text-main'}">
+          Treino ${d.letter}
+        </button>`).join('');
+
+      document.getElementById('editor-day-name').value = day.name;
+
+      const wkLabels = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      document.getElementById('editor-weekdays').innerHTML = wkLabels.map((lb, dow) => {
+        const on = day.weekdays.includes(dow);
+        return `
+          <button onclick="toggleDayWeekday(${dow})"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${on ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted'}">
+            ${lb}
+          </button>`;
+      }).join('');
+
+      // Cards de Exercícios com BADGE DE DESCANSO + DICA RÁPIDA DIRETO NO CARD
+      const listEl = document.getElementById('editor-exercises-list');
+      listEl.innerHTML = day.exercises.map((ex, i) => `
+        <div class="glass-card rounded-3xl p-4 flex flex-col md:flex-row gap-4 items-start">
+          <button onclick="openGuideModal('${ex.id}')" class="relative focus:outline-none">
+            ${renderAthleteAnimation(ex.anim, 'w-28 h-24')}
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-black/75 text-white">🔍 Ver Guia</span>
+          </button>
+
+          <div class="flex-1 w-full space-y-2.5 min-w-0">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-extrabold uppercase text-primary">${ex.muscle}</span>
+                  <!-- BADGE DE TEMPO DE DESCANSO EM DESTAQUE COM -15s / +15s -->
+                  <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-input border border-theme text-[11px] font-mono-num font-extrabold text-accent">
+                    <button onclick="adjustEditorRest(${i}, -15)" class="hover:text-main px-1">-15s</button>
+                    <span>⏱️ ${ex.rest}s</span>
+                    <button onclick="adjustEditorRest(${i}, 15)" class="hover:text-main px-1">+15s</button>
+                  </div>
+                </div>
+                <h4 class="font-extrabold text-base sm:text-lg mt-0.5">${ex.name}</h4>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <button onclick="moveExercise(${i}, -1)" class="w-8 h-8 rounded-lg glass-elevated text-xs font-bold" title="Subir">↑</button>
+                <button onclick="moveExercise(${i}, 1)" class="w-8 h-8 rounded-lg glass-elevated text-xs font-bold" title="Descer">↓</button>
+                <button onclick="openLibraryModal('swap', ${i})" class="px-2.5 py-1.5 rounded-lg glass-elevated text-xs font-bold">🔄 Trocar</button>
+                <button onclick="deleteEditorExercise(${i})" class="px-2.5 py-1.5 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold">🗑️</button>
+              </div>
+            </div>
+
+            <!-- DICA RÁPIDA DE EXECUÇÃO VISÍVEL DIRETO NO CARD -->
+            <div class="bg-input/90 border border-theme rounded-xl px-3 py-2 text-xs text-muted flex items-start gap-2">
+              <span class="text-primary shrink-0">💡</span>
+              <span><strong class="text-main">Execução:</strong> ${ex.cue}</span>
+            </div>
+
+            <!-- Campos Inline Editáveis -->
+            <div class="grid grid-cols-3 gap-2 text-xs">
+              <div>
+                <label class="text-[10px] text-muted font-bold">Séries</label>
+                <input type="number" min="1" max="10" value="${ex.sets.length}" onchange="updateExSetsCount(${i}, this.value)"
+                       class="mt-0.5 w-full bg-input border border-theme rounded-xl px-2.5 py-1.5 font-mono-num font-bold text-main" />
+              </div>
+              <div>
+                <label class="text-[10px] text-muted font-bold">Repetições</label>
+                <input type="text" value="${ex.sets[0]?.reps || '10-12'}" onchange="updateExAllReps(${i}, this.value)"
+                       class="mt-0.5 w-full bg-input border border-theme rounded-xl px-2.5 py-1.5 font-mono-num font-bold text-main" />
+              </div>
+              <div>
+                <label class="text-[10px] text-muted font-bold">Carga Base (kg)</label>
+                <input type="number" min="0" value="${ex.sets[0]?.weight || 0}" onchange="updateExAllWeight(${i}, this.value)"
+                       class="mt-0.5 w-full bg-input border border-theme rounded-xl px-2.5 py-1.5 font-mono-num font-bold text-main" />
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+
+      // BLOCO CARDIO FINAL OBRIGATÓRIO
+      const c = day.cardio;
+      document.getElementById('editor-cardio-block').innerHTML = `
+        <div class="cardio-banner rounded-3xl p-4 sm:p-5 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase" style="background:var(--primary);color:var(--primary-contrast);">
+              🫀 CARDIO FINAL OBRIGATÓRIO • TREINO ${day.letter}
+            </span>
+            <button onclick="openLibraryModal('swap_cardio')" class="px-3 py-1.5 rounded-xl bg-solid border border-theme text-xs font-bold">🔄 Trocar Cardio</button>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            ${renderAthleteAnimation(c.anim, 'w-28 h-24')}
+            <div class="flex-1 w-full space-y-2">
+              <h4 class="font-extrabold text-base sm:text-lg">${c.name}</h4>
+              <p class="text-xs text-muted">💡 ${c.cue}</p>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div><label class="text-[10px] text-muted font-bold">Tempo (min)</label><input type="number" min="5" value="${c.minutes}" onchange="updateCardioField('minutes', Number(this.value))" class="mt-0.5 w-full bg-solid border border-theme rounded-xl px-2.5 py-1.5 font-mono-num font-bold" /></div>
+                <div><label class="text-[10px] text-muted font-bold">Intensidade</label><input type="text" value="${c.intensity}" onchange="updateCardioField('intensity', this.value)" class="mt-0.5 w-full bg-solid border border-theme rounded-xl px-2.5 py-1.5 font-bold" /></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function adjustEditorRest(i, delta) {
+      const ex = state.plan.days[editorDayIdx].exercises[i];
+      ex.rest = Math.max(15, (Number(ex.rest) || 60) + delta);
+      saveState(); renderBuilder();
+    }
+    function renameCurrentDay(v) { state.plan.days[editorDayIdx].name = v.trim() || `Treino ${state.plan.days[editorDayIdx].letter}`; saveState(); renderDashboard(); }
+    function toggleDayWeekday(dow) {
+      const d = state.plan.days[editorDayIdx];
+      d.weekdays = d.weekdays.includes(dow) ? d.weekdays.filter(x => x !== dow) : [...d.weekdays, dow];
+      saveState(); renderBuilder();
+    }
+    function moveExercise(idx, dir) {
+      const arr = state.plan.days[editorDayIdx].exercises, t = idx + dir;
+      if (t < 0 || t >= arr.length) return;
+      [arr[idx], arr[t]] = [arr[t], arr[idx]];
+      saveState(); renderBuilder();
+    }
+    function deleteEditorExercise(idx) {
+      const arr = state.plan.days[editorDayIdx].exercises;
+      const rem = arr.splice(idx, 1)[0];
+      lastDeletedEx = { dayIdx: editorDayIdx, idx, item: rem };
+      saveState(); renderBuilder();
+      showToast(`"${rem.name}" removido.`, true);
+    }
+    function undoDeleteExercise() {
+      if (!lastDeletedEx) return;
+      state.plan.days[lastDeletedEx.dayIdx].exercises.splice(lastDeletedEx.idx, 0, lastDeletedEx.item);
+      lastDeletedEx = null; saveState(); renderBuilder();
+    }
+    function updateExSetsCount(i, val) {
+      const n = Math.max(1, Math.min(10, Number(val) || 3));
+      const ex = state.plan.days[editorDayIdx].exercises[i];
+      const base = ex.sets[0] || { weight: 20, reps: '10-12' };
+      while (ex.sets.length < n) ex.sets.push({ weight: base.weight, reps: base.reps, done: false });
+      while (ex.sets.length > n) ex.sets.pop();
+      saveState(); renderBuilder();
+    }
+    function updateExAllReps(i, val) { state.plan.days[editorDayIdx].exercises[i].sets.forEach(s => s.reps = val); saveState(); }
+    function updateExAllWeight(i, val) { const w = Math.max(0, Number(val) || 0); state.plan.days[editorDayIdx].exercises[i].sets.forEach(s => s.weight = w); saveState(); }
+    function updateCardioField(f, v) { state.plan.days[editorDayIdx].cardio[f] = v; saveState(); renderDashboard(); }
+    function startEditorDayWorkout() { activeDayIdx = editorDayIdx; activeExIdx = 0; switchTab('active'); }
+
+    // =========================================================================
+    // 8. ABA 3: TREINO ATIVO + CRONÔMETRO AUTOMÁTICO DE DESCANSO
+    // =========================================================================
+    function renderActiveWorkout() {
+      if (!state.plan.days.length) return;
+      if (activeDayIdx >= state.plan.days.length) activeDayIdx = 0;
+      const day = state.plan.days[activeDayIdx];
+
+      document.getElementById('active-day-select').innerHTML = state.plan.days.map((d, idx) =>
+        `<option value="${idx}" ${idx === activeDayIdx ? 'selected' : ''}>${d.name}</option>`).join('');
+      document.getElementById('active-goal-badge').textContent = state.plan.goalText;
+
+      document.getElementById('active-exercise-pills').innerHTML = day.exercises.map((ex, idx) => {
+        const doneAll = ex.sets.every(s => s.done);
+        const cur = idx === activeExIdx;
+        return `
+          <button onclick="activeExIdx=${idx}; renderActiveWorkout();"
+                  class="px-3.5 py-2 rounded-xl text-xs font-extrabold shrink-0 border transition ${cur ? 'btn-primary border-transparent' : doneAll ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'glass-elevated text-muted'}">
+            ${doneAll ? '✓ ' : `${idx + 1}. `}${ex.name.split(' ').slice(0, 2).join(' ')}
+          </button>`;
+      }).join('');
+
+      const stage = document.getElementById('active-focus-stage');
+      const ex = day.exercises[activeExIdx];
+      if (!ex) {
+        stage.innerHTML = `<div class="glass-card rounded-3xl p-6 text-center text-sm text-muted">Adicione exercícios para iniciar.</div>`;
+      } else {
+        const setsRows = ex.sets.map((s, sIdx) => `
+          <div class="grid grid-cols-12 gap-2 items-center bg-input border ${s.done ? 'border-emerald-500/40' : 'border-theme'} rounded-2xl p-2.5 text-xs">
+            <div class="col-span-2 font-mono-num font-bold text-center text-muted">#${sIdx + 1}</div>
+            <div class="col-span-4 flex items-center gap-1">
+              <input type="number" min="0" value="${s.weight}" onchange="updateActiveSet(${activeExIdx}, ${sIdx}, 'weight', this.value)"
+                     class="w-full bg-solid border border-theme rounded-xl px-2 py-2 text-center font-mono-num font-extrabold text-main" />
+              <span class="text-[10px] font-bold text-muted">kg</span>
+            </div>
+            <div class="col-span-3">
+              <input type="text" value="${s.reps}" onchange="updateActiveSet(${activeExIdx}, ${sIdx}, 'reps', this.value)"
+                     class="w-full bg-solid border border-theme rounded-xl px-2 py-2 text-center font-mono-num font-extrabold text-main" />
+            </div>
+            <div class="col-span-3">
+              <button onclick="toggleActiveSetDone(${activeExIdx}, ${sIdx})"
+                      class="w-full py-2 rounded-xl font-extrabold transition ${s.done ? 'btn-primary' : 'glass-elevated text-muted hover:text-main'}">
+                ${s.done ? '✓ Pago' : 'Concluir'}
+              </button>
+            </div>
+          </div>`).join('');
+
+        stage.innerHTML = `
+          <div class="glass-card rounded-3xl p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <div class="lg:col-span-5 space-y-2.5">
+              ${renderAthleteAnimation(ex.anim, 'w-full h-56 sm:h-64', true, 'active-anim-stage')}
+              <div class="flex items-center gap-2">
+                <button onclick="toggleStageClass('active-anim-stage','paused',this,'⏸ Pausar','▶ Continuar')" class="flex-1 py-2 rounded-xl glass-elevated text-xs font-bold">⏸ Pausar</button>
+                <button onclick="toggleStageClass('active-anim-stage','slow-mo',this,'🐢 0.5x','⚡ 1x')" class="flex-1 py-2 rounded-xl glass-elevated text-xs font-bold">🐢 0.5x</button>
+                <button onclick="openGuideModal('${ex.id}')" class="px-3 py-2 rounded-xl glass-elevated text-xs font-bold text-primary">📖 Guia</button>
+              </div>
+              <div class="bg-input border border-theme rounded-2xl p-3 text-xs text-muted">
+                <strong class="text-primary">💡 Dica Rápida:</strong> ${ex.cue}
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-3">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <span class="text-xs font-extrabold uppercase text-primary">${ex.muscle}</span>
+                  <h3 class="font-extrabold text-xl sm:text-2xl">${ex.name}</h3>
+                </div>
+                <button onclick="startRest(${ex.rest})" class="px-3.5 py-2 rounded-xl glass-elevated text-xs font-mono-num font-extrabold text-accent">
+                  ⏱️ Descanso: ${ex.rest}s ▶
+                </button>
+              </div>
+
+              <div class="grid grid-cols-12 gap-2 px-2 text-[10px] font-bold uppercase text-muted">
+                <div class="col-span-2 text-center">Série</div>
+                <div class="col-span-4 text-center">Carga Real</div>
+                <div class="col-span-3 text-center">Reps</div>
+                <div class="col-span-3 text-center">Ação</div>
+              </div>
+
+              <div class="space-y-2">${setsRows}</div>
+
+              <div class="flex items-center justify-between pt-2">
+                <button onclick="activeExIdx=Math.max(0, activeExIdx-1); renderActiveWorkout();" class="px-4 py-2 rounded-xl glass-elevated text-xs font-bold">← Anterior</button>
+                <button onclick="activeExIdx=Math.min(${day.exercises.length - 1}, activeExIdx+1); renderActiveWorkout();" class="px-4 py-2 rounded-xl btn-primary text-xs font-extrabold">Próximo →</button>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      // CARDIO FINAL OBRIGATÓRIO
+      const c = day.cardio;
+      const cm = String(Math.floor(cardioTimerSec / 60)).padStart(2, '0');
+      const cs = String(cardioTimerSec % 60).padStart(2, '0');
+      document.getElementById('active-cardio-stage').innerHTML = `
+        <div class="cardio-banner rounded-3xl p-4 sm:p-6 flex flex-col md:flex-row gap-5 items-center">
+          ${renderAthleteAnimation(c.anim, 'w-full md:w-44 h-36')}
+          <div class="flex-1 w-full space-y-2">
+            <span class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase" style="background:var(--primary);color:var(--primary-contrast);">🫀 CARDIO FINAL OBRIGATÓRIO</span>
+            <h4 class="font-extrabold text-xl">${c.name}</h4>
+            <p class="text-xs text-muted">${c.minutes} min • ${c.intensity} • 💡 ${c.cue}</p>
+            <div class="flex flex-wrap items-center gap-2 pt-2">
+              <span id="cardio-clock-display" class="px-4 py-2 rounded-xl bg-solid border border-theme font-mono-num font-extrabold text-lg">${cm}:${cs}</span>
+              <button onclick="toggleCardioTimer()" class="px-4 py-2 rounded-xl bg-solid border border-theme text-xs font-extrabold">${cardioTimerRunning ? '⏸ Pausar' : '▶ Iniciar Cardio'}</button>
+              <button onclick="toggleActiveCardioDone()" class="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm ${c.done ? 'btn-primary' : 'bg-solid border border-theme'}">
+                ${c.done ? '✅ Cardio Final Pago!' : 'Marcar Cardio Concluído'}
+              </button>
+            </div>
+          </div>
+        </div>`;
+
+      updateActiveMetrics();
+    }
+
+    function toggleStageClass(id, cls, btn, offTxt, onTxt) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      btn.textContent = el.classList.toggle(cls) ? onTxt : offTxt;
+    }
+    function switchActiveDay(idx) { activeDayIdx = idx; activeExIdx = 0; cardioTimerSec = (state.plan.days[idx]?.cardio?.minutes || 20) * 60; renderActiveWorkout(); }
+    function updateActiveSet(exIdx, sIdx, field, val) {
+      const s = state.plan.days[activeDayIdx].exercises[exIdx].sets[sIdx];
+      s[field] = field === 'weight' ? Math.max(0, Number(val) || 0) : val;
+      saveState(); updateActiveMetrics();
+    }
+    function toggleActiveSetDone(exIdx, sIdx) {
+      const ex = state.plan.days[activeDayIdx].exercises[exIdx];
+      ex.sets[sIdx].done = !ex.sets[sIdx].done;
+      saveState(); renderActiveWorkout();
+      // Inicia automaticamente o cronômetro com o tempo exato de descanso do exercício!
+      if (ex.sets[sIdx].done) startRest(ex.rest || 60);
+    }
+    function toggleActiveCardioDone() {
+      const c = state.plan.days[activeDayIdx].cardio;
+      c.done = !c.done;
+      saveState(); renderActiveWorkout();
+      if (c.done) showToast('🫀 Cardio Final Obrigatório concluído!');
+    }
+    function toggleCardioTimer() {
+      cardioTimerRunning = !cardioTimerRunning;
+      if (cardioTimerRunning) {
+        if (cardioTimerInterval) clearInterval(cardioTimerInterval);
+        cardioTimerInterval = setInterval(() => {
+          if (!cardioTimerRunning) return;
+          if (cardioTimerSec > 0) cardioTimerSec--;
+          else { cardioTimerRunning = false; playBeep(880, 0.2, 3); showToast('🫀 Tempo de Cardio finalizado!'); }
+          const el = document.getElementById('cardio-clock-display');
+          if (el) el.textContent = `${String(Math.floor(cardioTimerSec/60)).padStart(2,'0')}:${String(cardioTimerSec%60).padStart(2,'0')}`;
+        }, 1000);
+      }
+      renderActiveWorkout();
+    }
+    function updateActiveMetrics() {
+      const day = state.plan.days[activeDayIdx];
+      if (!day) return;
+      let total = 1, done = day.cardio.done ? 1 : 0, vol = 0;
+      day.exercises.forEach(ex => ex.sets.forEach(s => {
+        total++;
+        if (s.done) {
+          done++;
+          vol += (Number(s.weight) || 0) * (parseInt(String(s.reps).split('-')[0], 10) || 10);
+        }
+      }));
+      document.getElementById('active-progress-bar').style.width = Math.round((done / total) * 100) + '%';
+      document.getElementById('active-volume').textContent = vol.toLocaleString('pt-BR');
+    }
+
+    function finishActiveWorkout() {
+      const day = state.plan.days[activeDayIdx];
+      if (!day) return;
+      let vol = 0, doneSets = 0;
+      const newPRs = [];
+      day.exercises.forEach(ex => {
+        let maxW = 0;
+        ex.sets.forEach(s => {
+          if (s.done) {
+            doneSets++;
+            const w = Number(s.weight) || 0;
+            vol += w * (parseInt(String(s.reps).split('-')[0], 10) || 10);
+            if (w > maxW) maxW = w;
+          }
+        });
+        if (maxW > 0 && (!state.prs[ex.name] || maxW > state.prs[ex.name].weight)) {
+          state.prs[ex.name] = { weight: maxW, date: new Date().toLocaleDateString('pt-BR') };
+          newPRs.push(`${ex.name}: ${maxW}kg`);
+        }
+      });
+
+      const cardioDone = Boolean(day.cardio.done);
+      const xp = 120 + doneSets * 10 + (cardioDone ? 60 : 0) + newPRs.length * 30;
+      const dow = new Date().getDay();
+      state.weekCheckins[dow] = true;
+
+      const today = todayISO();
+      if (state.stats.lastDate !== today) {
+        state.stats.streak = (state.stats.streak || 0) + 1;
+        state.stats.lastDate = today;
+      }
+      state.stats.totalWorkouts += 1;
+      state.stats.totalVolume += vol;
+      state.stats.xp += xp;
+      if (cardioDone) state.weeklyCardioDoneMin = (state.weeklyCardioDoneMin || 0) + (Number(day.cardio.minutes) || 20);
+
+      state.history.unshift({
+        id: 'h_' + Date.now(),
+        date: new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }),
+        name: day.name,
+        volume: vol,
+        cardio: `${day.cardio.name} (${day.cardio.minutes}m)`
+      });
+
+      day.exercises.forEach(ex => ex.sets.forEach(s => s.done = false));
+      day.cardio.done = false;
+      saveState();
+
+      document.getElementById('fin-vol').textContent = vol.toLocaleString('pt-BR') + ' kg';
+      document.getElementById('fin-time').textContent = `${String(Math.floor(activeSessionSeconds/60)).padStart(2,'0')}:${String(activeSessionSeconds%60).padStart(2,'0')}`;
+      document.getElementById('fin-xp').textContent = `+${xp} XP`;
+      const prBox = document.getElementById('fin-prs');
+      if (newPRs.length) { prBox.classList.remove('hidden'); prBox.textContent = '🔥 Novos PRs: ' + newPRs.join(' • '); }
+      else prBox.classList.add('hidden');
+
+      renderAllViews();
+      document.getElementById('modal-finish').classList.remove('hidden');
+      launchConfetti();
+    }
+
+    // =========================================================================
+    // 9. ABA 4: BIBLIOTECA VISUAL
+    // =========================================================================
+    function renderCatalog() {
+      const muscles = ['Todos','Peito','Costas','Pernas','Ombros','Bíceps','Tríceps','Abdômen','Cardio'];
+      document.getElementById('catalog-muscle-chips').innerHTML = muscles.map(m => `
+        <button onclick="catalogMuscle='${m}'; renderCatalog();"
+                class="px-3.5 py-1.5 rounded-full text-xs font-extrabold shrink-0 border transition ${catalogMuscle === m ? 'btn-primary border-transparent' : 'bg-input border-theme text-muted'}">
+          ${m}
+        </button>`).join('');
+
+      const q = (document.getElementById('catalog-search').value || '').toLowerCase();
+      const items = [
+        ...getAllExercises(),
+        ...CARDIO_OPTIONS.map(c => ({ ...c, muscle: 'Cardio' }))
+      ].filter(it => (catalogMuscle === 'Todos' || it.muscle === catalogMuscle) && (it.name.toLowerCase().includes(q) || it.muscle.toLowerCase().includes(q)));
+
+      document.getElementById('catalog-grid').innerHTML = items.map(item => `
+        <div class="glass-card rounded-3xl p-4 flex flex-col gap-3">
+          ${renderAthleteAnimation(item.anim, 'w-full h-44', true)}
+          <div class="flex-1">
+            <span class="text-[10px] font-extrabold uppercase text-primary">${item.muscle}</span>
+            <h4 class="font-extrabold text-base">${item.name}</h4>
+            <p class="text-xs text-muted mt-1">💡 ${item.cue}</p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button onclick="openGuideModal('${item.id}')" class="flex-1 py-2 rounded-xl glass-elevated text-xs font-bold">📖 Guia</button>
+            ${item.muscle !== 'Cardio' ? `
+              <button onclick="openEditExerciseModal('${item.id}')" class="px-3 py-2 rounded-xl glass-elevated text-xs font-bold" title="Editar Dica">✏️</button>
+              <button onclick="quickAddFromCatalog('${item.id}')" class="flex-1 py-2 rounded-xl btn-primary text-xs font-extrabold">+ Add Treino ${state.plan.days[editorDayIdx]?.letter || 'A'}</button>
+            ` : `
+              <button onclick="quickSetCardioFromCatalog('${item.id}')" class="flex-1 py-2 rounded-xl btn-primary text-xs font-extrabold">Definir Cardio</button>
+            `}
+          </div>
+        </div>`).join('');
+    }
+
+    function quickAddFromCatalog(id) {
+      const dbEx = getAllExercises().find(e => e.id === id);
+      if (!dbEx || !state.plan.days.length) return;
+      state.plan.days[editorDayIdx].exercises.push(createExerciseEntry(dbEx, 3, '10-12', 60));
+      saveState(); renderBuilder(); renderActiveWorkout();
+      showToast(`➕ ${dbEx.name} adicionado ao Treino ${state.plan.days[editorDayIdx].letter}!`);
+    }
+    function quickSetCardioFromCatalog(id) {
+      const c = CARDIO_OPTIONS.find(x => x.id === id);
+      if (!c || !state.plan.days.length) return;
+      state.plan.days[editorDayIdx].cardio = { ...c, done: false };
+      saveState(); renderBuilder(); renderActiveWorkout(); renderDashboard();
+      showToast(`🫀 Cardio definido para ${c.name}!`);
+    }
+
+    // =========================================================================
+    // 10. ABA 5: EVOLUÇÃO, MEDIDAS & HISTÓRICO EDITÁVEL
+    // =========================================================================
+    function saveMeasurement(e) {
+      e.preventDefault();
+      const entry = {
+        id: 'm_' + Date.now(),
+        date: new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }),
+        weight: Number(document.getElementById('m-weight').value),
+        bf: Number(document.getElementById('m-bf').value) || null,
+        chest: Number(document.getElementById('m-chest').value) || null,
+        arm: Number(document.getElementById('m-arm').value) || null,
+        waist: Number(document.getElementById('m-waist').value) || null,
+        thigh: Number(document.getElementById('m-thigh').value) || null,
+        calf: Number(document.getElementById('m-calf').value) || null
+      };
+      state.measurements.push(entry);
+      state.profile.weight = entry.weight;
+      saveState(); e.target.reset(); renderAllViews();
+      showToast('📏 Medição registrada!');
+    }
+
+    function deleteMeasurement(idx) {
+      state.measurements.splice(idx, 1);
+      saveState(); renderEvolution();
+      showToast('🗑️ Registro removido.');
+    }
+
+    function deleteHistoryItem(idx) {
+      state.history.splice(idx, 1);
+      saveState(); renderEvolution(); renderDashboard();
+      showToast('🗑️ Sessão removida do histórico.');
+    }
+
+    function renderEvolution() {
+      const ms = state.measurements;
+      const box = document.getElementById('weight-chart-box');
+      if (!ms.length) {
+        box.innerHTML = `<p class="text-xs text-muted">Adicione sua primeira medição acima para gerar o gráfico 📈</p>`;
+        document.getElementById('evo-weight-delta').textContent = 'Sem registros';
+        document.getElementById('evo-measurements-table').innerHTML = '';
+      } else {
+        const first = ms[0], last = ms[ms.length - 1];
+        const diff = (last.weight - first.weight).toFixed(1);
+        document.getElementById('evo-weight-delta').textContent = ms.length > 1 ? `Variação: ${diff > 0 ? '+' : ''}${diff} kg` : `Atual: ${last.weight} kg`;
+
+        const w = 440, h = 140, pad = 24;
+        const vals = ms.map(x => x.weight);
+        const minV = Math.min(...vals) - 1, maxV = Math.max(...vals) + 1;
+        const pts = ms.map((m, idx) => ({
+          x: ms.length === 1 ? w / 2 : pad + (idx / (ms.length - 1)) * (w - pad * 2),
+          y: h - pad - ((m.weight - minV) / (maxV - minV || 1)) * (h - pad * 2),
+          date: m.date, val: m.weight
+        }));
+        box.innerHTML = `
+          <svg viewBox="0 0 ${w} ${h}" class="w-full h-full">
+            <polyline fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}"/>
+            ${pts.map(p => `
+              <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="var(--accent)" stroke="var(--bg-solid)" stroke-width="2"/>
+              <text x="${p.x}" y="${p.y - 9}" text-anchor="middle" font-size="9" font-weight="800" fill="var(--text-main)">${p.val}kg</text>
+              <text x="${p.x}" y="${h - 4}" text-anchor="middle" font-size="8" fill="var(--text-muted)">${p.date}</text>
+            `).join('')}
+          </svg>`;
+
+        document.getElementById('evo-measurements-table').innerHTML = ms.slice().reverse().map((m, rIdx) => {
+          const origIdx = ms.length - 1 - rIdx;
+          return `
+            <div class="bg-input border border-theme rounded-xl px-3 py-2 flex items-center justify-between text-xs font-mono-num">
+              <span><strong>${m.date}</strong> • Peso: <strong class="text-primary">${m.weight}kg</strong> ${m.arm ? `• Braço: ${m.arm}cm` : ''} ${m.waist ? `• Cintura: ${m.waist}cm` : ''}</span>
+              <button onclick="deleteMeasurement(${origIdx})" class="text-red-400 font-bold px-2">✕</button>
+            </div>`;
+        }).join('');
+      }
+
+      // PRs
+      const prKeys = Object.keys(state.prs);
+      document.getElementById('prs-list').innerHTML = !prKeys.length
+        ? `<p class="text-xs text-muted bg-input p-4 rounded-2xl border border-theme">Marque séries no Treino Ativo para gravar seus PRs automaticamente.</p>`
+        : prKeys.map(k => `
+            <div class="glass-elevated rounded-2xl p-3 flex items-center justify-between text-xs">
+              <div><div class="font-bold">${k}</div><div class="text-muted">${state.prs[k].date}</div></div>
+              <span class="px-3 py-1 rounded-xl btn-primary font-mono-num font-extrabold">${state.prs[k].weight} kg</span>
+            </div>`).join('');
+
+      // Histórico
+      document.getElementById('history-list').innerHTML = !state.history.length
+        ? `<p class="text-xs text-muted bg-input p-4 rounded-2xl border border-theme">Nenhum treino finalizado ainda.</p>`
+        : state.history.map((h, idx) => `
+            <div class="glass-elevated rounded-2xl p-3 flex items-center justify-between gap-2 text-xs">
+              <div><div class="font-bold">${h.name}</div><div class="text-muted">${h.date} • 🫀 ${h.cardio}</div></div>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-lg bg-input border border-theme font-mono-num font-bold text-primary">${h.volume.toLocaleString('pt-BR')} kg</span>
+                <button onclick="deleteHistoryItem(${idx})" class="text-red-400 font-bold px-1.5">✕</button>
+              </div>
+            </div>`).join('');
+    }
+
+    // =========================================================================
+    // 11. ABA 6: HIDRATAÇÃO & CALCULADORAS SINCRONIZÁVEIS
+    // =========================================================================
+    function addWater(ml) {
+      if (state.water.date !== todayISO()) state.water = { date: todayISO(), ml: 0 };
+      state.water.ml = Math.max(0, (state.water.ml || 0) + ml);
+      saveState(); renderWaterUI();
+      if (ml > 0) showToast(`💧 +${ml} ml registrados!`);
+    }
+    function renderWaterUI() {
+      const goal = state.goals.dailyWaterMl || 2625;
+      const cur = state.water.ml || 0;
+      const pct = Math.min(100, Math.round((cur / goal) * 100));
+      document.getElementById('dash-water-goal').textContent = goal;
+      document.getElementById('dash-water-cur').textContent = cur;
+      document.getElementById('dash-water-pct').textContent = pct + '%';
+      document.getElementById('dash-water-bar').style.width = pct + '%';
+    }
+
+    function runAllCalculators() {
+      const w = Math.max(30, Number(document.getElementById('c-weight').value) || 75);
+      const h = Math.max(120, Number(document.getElementById('c-height').value) || 175);
+      const age = Math.max(12, Number(document.getElementById('c-age').value) || 25);
+      const sex = document.getElementById('c-sex').value;
+      const act = Number(document.getElementById('c-act').value) || 1.55;
+      const goal = document.getElementById('c-goal').value;
+
+      const waterMl = Math.round(w * 35);
+      const tmb = Math.round(10 * w + 6.25 * h - 5 * age + (sex === 'M' ? 5 : -161));
+      let get = Math.round(tmb * act);
+      if (goal === 'bulking') get += 300;
+      if (goal === 'cutting') get -= 400;
+
+      const imc = (w / Math.pow(h / 100, 2)).toFixed(1);
+      const prot = Math.round(w * (goal === 'cutting' ? 2.2 : 2.0));
+      const fat = Math.round(w * 0.9);
+      const carb = Math.max(50, Math.round((get - prot * 4 - fat * 9) / 4));
+
+      document.getElementById('out-water').textContent = waterMl + ' ml';
+      document.getElementById('out-tmb').textContent = tmb + ' kcal';
+      document.getElementById('out-get').textContent = get + ' kcal';
+      document.getElementById('out-imc').textContent = imc;
+      document.getElementById('out-prot').textContent = prot + 'g';
+      document.getElementById('out-carb').textContent = carb + 'g';
+      document.getElementById('out-fat').textContent = fat + 'g';
+
+      const rmW = Math.max(1, Number(document.getElementById('c-rm-w').value) || 60);
+      const rmR = Math.max(1, Number(document.getElementById('c-rm-r').value) || 10);
+      const oneRM = rmR === 1 ? rmW : Math.round(rmW * (1 + rmR / 30));
+      document.getElementById('out-1rm').textContent = oneRM + ' kg';
+      document.getElementById('out-rm90').textContent = Math.round(oneRM * 0.9) + ' kg';
+      document.getElementById('out-rm75').textContent = Math.round(oneRM * 0.75) + ' kg';
+      document.getElementById('out-rm60').textContent = Math.round(oneRM * 0.6) + ' kg';
+
+      const fcMax = 220 - age;
+      document.getElementById('out-fc-max').textContent = fcMax + ' bpm';
+      document.getElementById('out-z2').textContent = `${Math.round(fcMax*0.6)}-${Math.round(fcMax*0.7)}`;
+      document.getElementById('out-z3').textContent = `${Math.round(fcMax*0.7)}-${Math.round(fcMax*0.8)}`;
+      document.getElementById('out-z4').textContent = `${Math.round(fcMax*0.8)}-${Math.round(fcMax*0.9)}`;
+    }
+
+    function syncCalcGoalsToDashboard() {
+      const w = Math.max(30, Number(document.getElementById('c-weight').value) || 75);
+      state.profile.weight = w;
+      state.profile.height = Number(document.getElementById('c-height').value) || 175;
+      state.profile.age = Number(document.getElementById('c-age').value) || 25;
+      state.goals.dailyWaterMl = Math.round(w * 35);
+      saveState(); renderDashboard();
+      showToast(`💧 Meta de ${state.goals.dailyWaterMl}ml sincronizada com o Dashboard!`);
+    }
+
+    // =========================================================================
+    // 12. ABA 7: PERSONAL GEMINI (GEMINI_API + FALLBACK INTELIGENTE)
+    // =========================================================================
+    const apiKey = ""; // Fornecido em runtime
+
+    async function callGemini(userPrompt, systemPrompt) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{ parts: [{ text: userPrompt }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+      };
+      const delays = [1000, 2000, 4000];
+      for (let i = 0; i <= delays.length; i++) {
+        try {
+          const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          if (!res.ok) throw new Error(res.status);
+          const data = await res.json();
+          const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (txt) return txt.trim();
+        } catch {
+          if (i < delays.length) await new Promise(r => setTimeout(r, delays[i]));
+        }
+      }
+      return null;
+    }
+
+    function saveGeminiPrefs() {
+      state.geminiPrefs = {
+        focus: document.getElementById('gem-focus').value.trim() || 'Hipertrofia e condicionamento',
+        style: document.getElementById('gem-style').value
+      };
+      saveState();
+      showToast('✨ Perfil do Personal GEMINI atualizado!');
+    }
+
+    function appendGeminiMsg(role, text) {
+      const box = document.getElementById('gemini-chat-box');
+      const div = document.createElement('div');
+      div.className = role === 'user' ? 'flex justify-end' : 'flex items-start gap-2.5';
+      div.innerHTML = role === 'user'
+        ? `<div class="rounded-2xl rounded-tr-sm px-4 py-3 text-xs sm:text-sm font-bold max-w-[85%]" style="background:var(--primary);color:var(--primary-contrast);">${escapeHtml(text)}</div>`
+        : `<div class="w-8 h-8 rounded-xl glass-elevated flex items-center justify-center shrink-0">🤖</div>
+           <div class="glass-elevated rounded-2xl rounded-tl-sm p-3.5 text-xs sm:text-sm max-w-[85%] leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function analyzeMyWorkoutWithGemini() {
+      const summary = state.plan.days.map(d =>
+        `${d.name}: ${d.exercises.map(e => `${e.name} (${e.sets.length}x${e.sets[0]?.reps}, desc ${e.rest}s)`).join(', ')} | Cardio: ${d.cardio.name} (${d.cardio.minutes}min)`
+      ).join('\n');
+      appendGeminiMsg('user', `📋 Analisar meu treino atual (${state.plan.splitId} — ${state.plan.goalText})`);
+
+      const sys = `Você é o Personal GEMINI da ID ESPORTIVO. Foco do aluno: ${state.geminiPrefs.focus}. Estilo: ${state.geminiPrefs.style}. Responda em português do Brasil de forma prática e motivadora.`;
+      const reply = await callGemini(`Analise esta planilha:\n${summary}\nDê pontos fortes e 2 ajustes práticos.`, sys);
+      appendGeminiMsg('bot', reply || `Análise da sua divisão ${state.plan.splitId} (${state.plan.goalText}):\n✅ Ponto Forte: Ótima seleção de exercícios base e Cardio Final Obrigatório garantido em todos os dias.\n💡 Ajuste 1: Controle a fase excêntrica (descida) em 2 segundos e respeite o cronômetro de descanso (${state.plan.days[0]?.exercises[0]?.rest || 60}s).\n💡 Ajuste 2: Registre todas as cargas no Treino Ativo para buscar progressão semanal.`);
+    }
+
+    async function quickAskGemini(q) { await sendGeminiQuestion(q); }
+    async function submitGeminiChat(e) {
+      e.preventDefault();
+      const inp = document.getElementById('gemini-input');
+      const q = inp.value.trim();
+      if (!q) return;
+      inp.value = '';
+      await sendGeminiQuestion(q);
+    }
+    async function sendGeminiQuestion(q) {
+      appendGeminiMsg('user', q);
+      const btn = document.getElementById('gemini-send-btn');
+      btn.disabled = true; btn.textContent = '...';
+      const sys = `Você é o Personal GEMINI da plataforma de musculação ID ESPORTIVO. Foco: ${state.geminiPrefs.focus}. Estilo: ${state.geminiPrefs.style}. Responda em português do Brasil com dicas claras e fáceis de aplicar.`;
+      const reply = await callGemini(q, sys);
+      appendGeminiMsg('bot', reply || 'Dica prática do Personal GEMINI: Mantenha amplitude total com postura neutra, respire expirando no esforço, respeite o cronômetro de descanso entre séries e finalize sempre com o Cardio Obrigatório para maximizar seu condicionamento!');
+      btn.disabled = false; btn.textContent = 'Enviar';
+    }
+    function clearGeminiChat() {
+      document.getElementById('gemini-chat-box').innerHTML = `<div class="text-xs text-muted text-center py-4">Conversa limpa. Envie sua próxima dúvida!</div>`;
+    }
+
+    // =========================================================================
+    // 13. ABA 8: 10 PALETAS + COLOR PICKER + SOM + BACKUP JSON
+    // =========================================================================
+    function applyTheme(themeId, notify = false) {
+      const t = THEMES.find(x => x.id === themeId) || THEMES[0];
+      const root = document.documentElement;
+      Object.entries(t.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+      root.style.setProperty('--cardio-bg', `linear-gradient(135deg, ${t.vars['--primary']}24, ${t.vars['--accent']}1f)`);
+      state.theme = { id: t.id, customPrimary: null, customAccent: null, baseMode: t.mode };
+      document.getElementById('cp-primary').value = t.vars['--primary'];
+      document.getElementById('cp-accent').value = t.vars['--accent'];
+      saveState(); renderThemesUI();
+      if (notify) showToast(`🎨 Paleta "${t.name}" aplicada!`);
+    }
+
+    function applyCustomColors() {
+      const p = document.getElementById('cp-primary').value;
+      const a = document.getElementById('cp-accent').value;
+      const root = document.documentElement;
+      root.style.setProperty('--primary', p);
+      root.style.setProperty('--accent', a);
+      root.style.setProperty('--primary-glow', p + '48');
+      root.style.setProperty('--border-glow', p + '55');
+      root.style.setProperty('--cardio-bg', `linear-gradient(135deg, ${p}26, ${a}20)`);
+
+      const r = parseInt(p.slice(1,3),16), g = parseInt(p.slice(3,5),16), b = parseInt(p.slice(5,7),16);
+      const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+      root.style.setProperty('--primary-contrast', lum > 0.6 ? '#070b11' : '#ffffff');
+      state.theme.customPrimary = p; state.theme.customAccent = a;
+      saveState();
+    }
+
+    function toggleBaseLightDark() {
+      const toLight = state.theme.baseMode !== 'light';
+      state.theme.baseMode = toLight ? 'light' : 'dark';
+      const root = document.documentElement;
+      if (toLight) {
+        root.style.setProperty('--bg-main','#eef2f7'); root.style.setProperty('--bg-surface','rgba(255,255,255,0.92)');
+        root.style.setProperty('--bg-solid','#ffffff'); root.style.setProperty('--bg-elevated','rgba(248,250,252,0.95)');
+        root.style.setProperty('--bg-input','#e2e8f0'); root.style.setProperty('--border-color','rgba(15,23,42,0.10)');
+        root.style.setProperty('--text-main','#0f172a'); root.style.setProperty('--text-muted','#475569');
+      } else {
+        root.style.setProperty('--bg-main','#070b11'); root.style.setProperty('--bg-surface','rgba(16,23,36,0.88)');
+        root.style.setProperty('--bg-solid','#101724'); root.style.setProperty('--bg-elevated','rgba(25,36,56,0.88)');
+        root.style.setProperty('--bg-input','#0b111c'); root.style.setProperty('--border-color','rgba(255,255,255,0.09)');
+        root.style.setProperty('--text-main','#f4f7fb'); root.style.setProperty('--text-muted','#94a3b8');
+      }
+      saveState();
+    }
+
+    function renderThemesUI() {
+      document.getElementById('themes-grid').innerHTML = THEMES.map(t => {
+        const active = state.theme.id === t.id && !state.theme.customPrimary;
+        return `
+          <button onclick="applyTheme('${t.id}', true)"
+                  class="p-3.5 rounded-2xl border-2 text-left glass-elevated transition hover:scale-[1.02]"
+                  style="border-color: ${active ? 'var(--primary)' : 'var(--border-color)'};">
+            <div class="flex items-center -space-x-1.5 mb-2">
+              ${t.preview.map(c => `<span class="w-5 h-5 rounded-full border border-white/20" style="background:${c}"></span>`).join('')}
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm">${t.name}</div>
+            <div class="text-[10px] text-muted">${active ? '✓ Ativo' : 'Aplicar'}</div>
+          </button>`;
+      }).join('');
+
+      document.getElementById('hdr-palette-list').innerHTML = THEMES.map(t => `
+        <button onclick="applyTheme('${t.id}', true); toggleHeaderPaletteMenu();"
+                class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-white/5">
+          <span>${t.name}</span>
+          <span class="flex -space-x-1">${t.preview.slice(2).map(c => `<span class="w-3.5 h-3.5 rounded-full border border-black/30" style="background:${c}"></span>`).join('')}</span>
+        </button>`).join('');
+    }
+
+    function toggleHeaderPaletteMenu() {
+      document.getElementById('hdr-palette-dropdown').classList.toggle('hidden');
+    }
+
+    function toggleSoundSetting() {
+      state.soundEnabled = !state.soundEnabled;
+      saveState();
+      document.getElementById('btn-sound-toggle').textContent = state.soundEnabled ? '🔊 Som Ativado' : '🔇 Som Mutado';
+    }
+
+    function exportBackupJSON() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `id_esportivo_${todayISO()}.json`; a.click();
+      URL.revokeObjectURL(url);
+      showToast('⬇️ Backup JSON exportado!');
+    }
+
+    function importBackupJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (!data.plan) throw new Error();
+          state = data; saveState();
+          applyTheme(state.theme.id || 'neon_volt', false);
+          renderAllViews();
+          showToast('⬆️ Backup importado!');
+        } catch { showToast('❌ Arquivo JSON inválido.'); }
+      };
+      r.readAsText(file);
+    }
+
+    function openResetConfirmModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
+    function confirmResetAll() { localStorage.removeItem(STORE_KEY); location.reload(); }
+
+    // =========================================================================
+    // 14. MODAIS: GUIA, BIBLIOTECA & CRIAR/EDITAR EXERCÍCIO
+    // =========================================================================
+    function openGuideModal(id) {
+      const item = getAllExercises().find(e => e.id === id) || CARDIO_OPTIONS.find(c => c.id === id);
+      if (!item) return;
+      guidePaused = false; guideSlow = false;
+      document.getElementById('guide-muscle').textContent = item.muscle || 'Cardio';
+      document.getElementById('guide-title').textContent = item.name;
+      document.getElementById('guide-stage-wrap').innerHTML = renderAthleteAnimation(item.anim, 'w-full h-60', true, 'guide-anim-stage');
+      document.getElementById('guide-cue').textContent = item.cue;
+      document.getElementById('guide-mistakes').textContent = item.mistakes;
+      document.getElementById('modal-guide').classList.remove('hidden');
+    }
+    function toggleGuidePlay() {
+      guidePaused = !guidePaused;
+      document.getElementById('guide-anim-stage')?.classList.toggle('paused', guidePaused);
+      document.getElementById('guide-play-btn').textContent = guidePaused ? '▶ Continuar' : '⏸ Pausar';
+    }
+    function setGuideSpeed(slow) {
+      guideSlow = slow;
+      document.getElementById('guide-anim-stage')?.classList.toggle('slow-mo', slow);
+      document.getElementById('guide-speed-1x').className = !slow ? 'px-3 py-1.5 rounded-xl btn-primary text-xs font-extrabold' : 'px-3 py-1.5 rounded-xl glass-elevated text-xs font-extrabold';
+      document.getElementById('guide-speed-slow').className = slow ? 'px-3 py-1.5 rounded-xl btn-primary text-xs font-extrabold' : 'px-3 py-1.5 rounded-xl glass-elevated text-xs font-extrabold';
+    }
+
+    function openLibraryModal(mode, swapIdx = -1) {
+      modalLibMode = mode; modalSwapIdx = swapIdx;
+      const ctrl = document.getElementById('lib-controls');
+      if (mode === 'swap_cardio') {
+        document.getElementById('lib-title').textContent = '🫀 Trocar Cardio Final Obrigatório';
+        ctrl.classList.add('hidden');
+      } else {
+        modalLibMuscle = mode === 'swap' ? state.plan.days[editorDayIdx].exercises[swapIdx].muscle : 'Todos';
+        document.getElementById('lib-title').textContent = mode === 'swap' ? '🔄 Substituir Exercício' : '+ Adicionar Exercício';
+        ctrl.classList.remove('hidden');
+        document.getElementById('lib-search').value = '';
+      }
+      renderModalLibraryList();
+      document.getElementById('modal-library').classList.remove('hidden');
+    }
+
+    function renderModalLibraryList() {
+      const list = document.getElementById('lib-list');
+      if (modalLibMode === 'swap_cardio') {
+        list.innerHTML = CARDIO_OPTIONS.map(c => `
+          <div class="glass-elevated rounded-2xl p-3 flex items-center gap-3">
+            ${renderAthleteAnimation(c.anim, 'w-20 h-16')}
+            <div class="flex-1 min-w-0"><div class="font-bold text-sm truncate">${c.name}</div><div class="text-xs text-muted">${c.minutes} min • ${c.intensity}</div></div>
+            <button onclick="selectModalCardio('${c.id}')" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">Escolher</button>
+          </div>`).join('');
+        return;
+      }
+
+      const muscles = ['Todos','Peito','Costas','Pernas','Ombros','Bíceps','Tríceps','Abdômen'];
+      document.getElementById('lib-chips').innerHTML = muscles.map(m => `
+        <button onclick="modalLibMuscle='${m}'; renderModalLibraryList();"
+                class="px-3 py-1 rounded-full text-xs font-bold shrink-0 border ${modalLibMuscle === m ? 'btn-primary border-transparent' : 'bg-solid border-theme text-muted'}">${m}</button>`).join('');
+
+      const q = (document.getElementById('lib-search').value || '').toLowerCase();
+      const filtered = getAllExercises().filter(e =>
+        (modalLibMuscle === 'Todos' || e.muscle === modalLibMuscle) &&
+        (e.name.toLowerCase().includes(q) || e.muscle.toLowerCase().includes(q))
+      );
+
+      list.innerHTML = filtered.map(ex => `
+        <div class="glass-elevated rounded-2xl p-3 flex items-center gap-3">
+          ${renderAthleteAnimation(ex.anim, 'w-20 h-16')}
+          <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-extrabold uppercase text-primary">${ex.muscle}</span>
+            <div class="font-bold text-sm truncate">${ex.name}</div>
+          </div>
+          <button onclick="selectModalExercise('${ex.id}')" class="px-3.5 py-2 rounded-xl btn-primary text-xs font-extrabold">${modalLibMode === 'swap' ? 'Trocar' : 'Adicionar'}</button>
+        </div>`).join('');
+    }
+
+    function selectModalExercise(id) {
+      const dbEx = getAllExercises().find(e => e.id === id);
+      if (!dbEx) return;
+      const day = state.plan.days[editorDayIdx];
+      if (modalLibMode === 'swap' && modalSwapIdx >= 0) {
+        const old = day.exercises[modalSwapIdx];
+        day.exercises[modalSwapIdx] = createExerciseEntry(dbEx, old.sets.length, old.sets[0]?.reps || '10-12', old.rest);
+      } else {
+        day.exercises.push(createExerciseEntry(dbEx, 3, '10-12', 60));
+      }
+      saveState(); renderBuilder(); renderActiveWorkout(); closeModal('modal-library');
+      showToast(`✅ ${dbEx.name} aplicado!`);
+    }
+    function selectModalCardio(id) {
+      const c = CARDIO_OPTIONS.find(x => x.id === id);
+      if (!c) return;
+      state.plan.days[editorDayIdx].cardio = { ...c, done: false };
+      saveState(); renderBuilder(); renderActiveWorkout(); renderDashboard(); closeModal('modal-library');
+      showToast(`🫀 Cardio alterado para ${c.name}!`);
+    }
+
+    function openCustomExerciseModal() {
+      document.getElementById('ce-edit-id').value = '';
+      document.getElementById('ce-name').value = '';
+      document.getElementById('ce-cue').value = '';
+      document.getElementById('modal-custom-ex').classList.remove('hidden');
+    }
+    function openEditExerciseModal(id) {
+      const ex = getAllExercises().find(e => e.id === id);
+      if (!ex) return;
+      document.getElementById('ce-edit-id').value = ex.id;
+      document.getElementById('ce-name').value = ex.name;
+      document.getElementById('ce-muscle').value = ex.muscle;
+      document.getElementById('ce-anim').value = ex.anim;
+      document.getElementById('ce-cue').value = ex.cue;
+      document.getElementById('modal-custom-ex').classList.remove('hidden');
+    }
+    function saveCustomExercise(e) {
+      e.preventDefault();
+      const editId = document.getElementById('ce-edit-id').value;
+      const name = document.getElementById('ce-name').value.trim();
+      const muscle = document.getElementById('ce-muscle').value;
+      const anim = document.getElementById('ce-anim').value;
+      const sets = Number(document.getElementById('ce-sets').value) || 4;
+      const reps = document.getElementById('ce-reps').value.trim() || '10-12';
+      const rest = Number(document.getElementById('ce-rest').value) || 60;
+      const cue = document.getElementById('ce-cue').value.trim() || 'Movimento controlado e postura firme.';
+
+      if (editId) {
+        const customIdx = state.customExercises.findIndex(x => x.id === editId);
+        if (customIdx >= 0) {
+          state.customExercises[customIdx] = { ...state.customExercises[customIdx], name, muscle, anim, cue };
+        } else {
+          state.editedBaseExercises[editId] = { name, muscle, anim, cue };
+        }
+        showToast(`✏️ "${name}" atualizado na biblioteca!`);
+      } else {
+        const custom = { id: 'custom_' + Date.now(), name, muscle, anim, defaultWeight: 20, cue, mistakes: 'Mantenha controle na fase excêntrica.' };
+        state.customExercises.push(custom);
+        if (state.plan.days[editorDayIdx]) {
+          state.plan.days[editorDayIdx].exercises.push(createExerciseEntry(custom, sets, reps, rest));
+        }
+        showToast(`✨ "${name}" criado e adicionado ao Treino ${state.plan.days[editorDayIdx]?.letter || 'A'}!`);
+      }
+      saveState(); closeModal('modal-custom-ex'); renderAllViews();
+    }
+
+    // =========================================================================
+    // 15. CRONÔMETRO DE DESCANSO + BIP SONORO + UTILITÁRIOS
+    // =========================================================================
+    let audioCtx = null;
+    function playBeep(freq = 880, dur = 0.14, count = 1) {
+      if (!state.soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        for (let i = 0; i < count; i++) {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.frequency.value = freq + i * 110;
+          const t = audioCtx.currentTime + i * 0.18;
+          gain.gain.setValueAtTime(0.14, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(t); osc.stop(t + dur);
+        }
+      } catch {}
+    }
+
+    function openRestTimer() { document.getElementById('rest-timer-widget').classList.remove('hidden'); updateRestUI(); }
+    function closeRestTimer() { document.getElementById('rest-timer-widget').classList.add('hidden'); }
+    function startRest(sec) {
+      restTotal = sec; restLeft = sec; restRunning = true; openRestTimer();
+      if (restInterval) clearInterval(restInterval);
+      updateRestUI();
+      restInterval = setInterval(() => {
+        if (!restRunning) return;
+        restLeft--;
+        if (restLeft <= 3 && restLeft > 0) playBeep(660, 0.08, 1);
+        if (restLeft <= 0) {
+          restLeft = 0; restRunning = false; clearInterval(restInterval);
+          playBeep(880, 0.18, 3);
+          const w = document.getElementById('rest-timer-widget');
+          w.classList.add('timer-done-pulse');
+          setTimeout(() => w.classList.remove('timer-done-pulse'), 3000);
+          showToast('⏱️ Descanso terminado! Hora da próxima série!');
+        }
+        updateRestUI();
+      }, 1000);
+    }
+    function toggleRest() { if (restLeft <= 0) startRest(restTotal || 60); else { restRunning = !restRunning; updateRestUI(); } }
+    function adjustRest(d) { restLeft = Math.max(5, restLeft + d); if (restLeft > restTotal) restTotal = restLeft; updateRestUI(); }
+    function resetRest() { restRunning = false; if (restInterval) clearInterval(restInterval); restLeft = restTotal; updateRestUI(); }
+    function updateRestUI() {
+      const m = String(Math.floor(restLeft / 60)).padStart(2, '0'), s = String(restLeft % 60).padStart(2, '0');
+      document.getElementById('rest-display').textContent = `${m}:${s}`;
+      document.getElementById('rest-toggle-btn').textContent = restRunning ? 'Pausar' : 'Iniciar';
+      document.getElementById('top-timer-label').textContent = restRunning ? `${m}:${s}` : 'Descanso';
+      document.getElementById('rest-ring').style.strokeDashoffset = 213.6 * (1 - (restTotal ? restLeft / restTotal : 0));
+    }
+
+    function switchTab(id) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + id)?.classList.remove('hidden');
+
+      document.querySelectorAll('.desk-nav-btn').forEach(b => b.classList.remove('nav-pill-active'));
+      document.getElementById('nav-' + id)?.classList.add('nav-pill-active');
+
+      document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('mob-nav-active'));
+      document.getElementById('mob-' + id)?.classList.add('mob-nav-active');
+
+      if (id === 'active') renderActiveWorkout();
+      if (id === 'library') renderCatalog();
+      if (id === 'evolution') renderEvolution();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleEditPanel(id) { document.getElementById(id)?.classList.toggle('hidden'); }
+    function toggleMobileDrawer(open) { document.getElementById('mobile-drawer').classList.toggle('hidden', !open); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    function showToast(msg, withUndo = false) {
+      const box = document.getElementById('toast-box');
+      const div = document.createElement('div');
+      div.className = 'bg-solid rounded-2xl px-4 py-3 shadow-xl border text-xs sm:text-sm font-bold flex items-center justify-between gap-3';
+      div.style.borderColor = 'var(--primary)';
+      div.innerHTML = `<span>${msg}</span>${withUndo ? `<button onclick="undoDeleteExercise(); this.parentElement.remove();" class="px-2.5 py-1 rounded-lg btn-primary text-xs font-extrabold">Desfazer</button>` : ''}`;
+      box.appendChild(div);
+      setTimeout(() => div.remove(), withUndo ? 5500 : 3000);
+    }
+
+    function launchConfetti() {
+      const cols = ['#bef264','#38bdf8','#ff5722','#f5c542','#c084fc','#ff4d8d'];
+      for (let i = 0; i < 45; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = cols[i % cols.length];
+        c.style.animationDelay = (Math.random() * 0.6) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3200);
+      }
+    }
+
+    function renderAllViews() {
+      renderDashboard();
+      renderBuilder();
+      renderActiveWorkout();
+      renderCatalog();
+      renderEvolution();
+      renderThemesUI();
+      runAllCalculators();
+    }
+
+    // =========================================================================
+    // 16. INICIALIZAÇÃO
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      applyTheme(state.theme.id || 'neon_volt', false);
+      if (state.theme.customPrimary) {
+        document.getElementById('cp-primary').value = state.theme.customPrimary;
+        document.getElementById('cp-accent').value = state.theme.customAccent || '#38bdf8';
+        applyCustomColors();
+      }
+      if (!state.plan.days || !state.plan.days.length) {
+        buildWorkoutPlan('ABC', 'Hipertrofia', 'intermediario', 'auto');
+      }
+      selectedGenSplit = state.plan.splitId || 'ABC';
+      selectedGenGoal = state.plan.goalText || 'Hipertrofia';
+      document.getElementById('c-weight').value = state.profile.weight || 75;
+      document.getElementById('c-height').value = state.profile.height || 175;
+      document.getElementById('c-age').value = state.profile.age || 25;
+      document.getElementById('gem-focus').value = state.geminiPrefs.focus;
+      document.getElementById('gem-style').value = state.geminiPrefs.style;
+      document.getElementById('btn-sound-toggle').textContent = state.soundEnabled ? '🔊 Som Ativado' : '🔇 Som Mutado';
+
+      renderAllViews();
+      switchTab('dashboard');
+
+      activeClockInterval = setInterval(() => {
+        activeSessionSeconds++;
+        const el = document.getElementById('active-clock');
+        if (el) el.textContent = `${String(Math.floor(activeSessionSeconds/60)).padStart(2,'0')}:${String(activeSessionSeconds%60).padStart(2,'0')}`;
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
